@@ -1,0 +1,120 @@
+\documentclass[a4paper,12pt]{report}
+
+\usepackage{graphicx}
+
+\usepackage[english, spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[nottoc]{tocbibind}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[linesnumbered, ruled, spanish]{algorithm2e}	
+\usepackage{url}
+
+\usepackage{lipsum}
+
+\newtheorem{defn}{Definición}
+\newtheorem{teorema}{Teorema}
+\newtheorem{lema}{Lema}
+\newtheorem{obs}{Observación}
+\newtheorem{prop}{Proposición}
+
+\newenvironment{abstractpage}
+{\cleardoublepage\vspace*{\fill}\thispagestyle{empty}}
+{\vfill\cleardoublepage}
+\newenvironment{abstractnew}[1]
+{\bigskip\selectlanguage{#1}%
+	\begin{center}\bfseries\abstractname\end{center}}
+{\par\bigskip}
+		
+\textheight=25cm \addtolength{\topmargin}{-2.5cm}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+
+{\large\bf UNIVERSIDAD COMPLUTENSE DE MADRID} \\
+{\bf\small FACULTAD DE CIENCIAS MATEMÁTICAS}\\[0.35cm]
+{\large\bf UNIVERSIDAD POLITÉCNICA DE MADRID}\\
+{\bf\small ESCUELA TÉCNICA SUPERIOR DE INGENIEROS DE TELECOMUNICACIÓN}\\[1.2cm]
+
+{\bf MÁSTER EN TRATAMIENTO ESTADÍSTICO COMPUTACIONAL DE LA INFORMACIÓN}\\[1.2cm]
+\mbox{}
+
+
+
+\includegraphics[scale=1.5]{../images/cover/TECI-EscudoUCM} \hspace{2.5cm}
+\includegraphics[scale=1.5]{../images/cover/TECI-EscudoUPM} \\[1.2cm]
+
+
+
+{\large\bf TRABAJO DE FIN DE MÁSTER}\\[2cm]
+
+
+{\large\bf Redes Generativas Antagónicas}\\[1cm]%Insertar título correspondiente
+
+{\large\bf Antón Makarov Samusev}\\[1.5cm]%Insertar
+
+
+{\bf Director}\\[0.4cm]
+{\bf Francisco Javier Yáñez Gestoso} \\[2cm]
+
+{\bf Madrid, 2019}
+\end{center}
+
+\newpage %Página blanco siguiente a la portada
+\thispagestyle{empty}
+\mbox{}\newpage
+
+\begin{abstractpage}
+	\begin{abstractnew}{spanish}
+		\lipsum[2]
+	\end{abstractnew}
+	
+	\begin{abstractnew}{english}
+		\lipsum[2]
+	\end{abstractnew}
+\end{abstractpage}
+
+\newpage %Página blanco siguiente a Resumen/Abstract
+\thispagestyle{empty}
+\mbox{}\newpage
+
+\tableofcontents
+
+\newpage %Página blanco siguiente a Resumen/Abstract
+\thispagestyle{empty}
+\mbox{}\newpage
+
+\chapter{Introducción}
+\cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
+\lipsum
+\chapter{Preliminares}
+\lipsum[2]
+\section{Conceptos básicos}
+\lipsum
+\section{Redes neuronales}
+\lipsum[1-4]
+\subsection{Aprendizaje profundo}
+\lipsum[1-8]
+\subsection{Redes neuronales convolucionales}
+\lipsum[1]
+\chapter{Redes generativas antagónicas}
+\lipsum[2]
+\section{Aspectos teóricos}
+\lipsum
+\section{Aspectos prácticos}
+\lipsum
+\chapter{El principio del arte}
+\lipsum[3]
+\section{DCGAN}
+\lipsum
+\section{Resultados}
+\lipsum
+\chapter{Conclusión}
+\lipsum[1-3]
+
+\bibliography{../bibliography/tfmbib}
+\bibliographystyle{abbrv}
+\end{document}

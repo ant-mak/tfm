@@ -1,0 +1,19 @@
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\babel@toc {english}{}
+\babel@toc {spanish}{}
+\contentsline {chapter}{\numberline {1}Introducci\'on}{7}
+\contentsline {chapter}{\numberline {2}Preliminares}{9}
+\contentsline {section}{\numberline {2.1}Conceptos b\'asicos}{9}
+\contentsline {section}{\numberline {2.2}Redes neuronales}{10}
+\contentsline {subsection}{\numberline {2.2.1}Aprendizaje profundo}{11}
+\contentsline {subsection}{\numberline {2.2.2}Redes neuronales convolucionales}{13}
+\contentsline {chapter}{\numberline {3}Redes generativas antag\'onicas}{14}
+\contentsline {section}{\numberline {3.1}Aspectos te\'oricos}{14}
+\contentsline {section}{\numberline {3.2}Aspectos pr\'acticos}{15}
+\contentsline {chapter}{\numberline {4}El principio del arte}{18}
+\contentsline {section}{\numberline {4.1}DCGAN}{18}
+\contentsline {section}{\numberline {4.2}Resultados}{19}
+\contentsline {chapter}{\numberline {5}Conclusi\'on}{22}
+\contentsline {chapter}{Bibliograf\'{\i }a}{23}
