@@ -12,8 +12,6 @@
 \usepackage[linesnumbered, ruled, spanish]{algorithm2e}	
 \usepackage{url}
 
-\usepackage{lipsum}
-
 \newtheorem{defn}{Definición}
 \newtheorem{teorema}{Teorema}
 \newtheorem{lema}{Lema}
@@ -69,11 +67,11 @@
 
 \begin{abstractpage}
 	\begin{abstractnew}{spanish}
-		\lipsum[2]
+	Resumen
 	\end{abstractnew}
 	
 	\begin{abstractnew}{english}
-		\lipsum[2]
+	Abstract
 	\end{abstractnew}
 \end{abstractpage}
 
@@ -83,37 +81,96 @@
 
 \tableofcontents
 
-\newpage %Página blanco siguiente a Resumen/Abstract
+\newpage %Página blanco siguiente a Índice
 \thispagestyle{empty}
 \mbox{}\newpage
 
 \chapter{Introducción}
 \cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
-\lipsum
+
 \chapter{Preliminares}
-\lipsum[2]
+
 \section{Conceptos básicos}
-\lipsum
+\begin{defn}[Divergencia de Kullback-Leibler]
+	hola
+\end{defn}
+\begin{defn}[Divergencia de Jensen-Shannon]
+	Hola
+\end{defn}
 \section{Redes neuronales}
-\lipsum[1-4]
+
 \subsection{Aprendizaje profundo}
-\lipsum[1-8]
+
 \subsection{Redes neuronales convolucionales}
-\lipsum[1]
+
 \chapter{Redes generativas antagónicas}
-\lipsum[2]
+En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante. 
+\section{Idea general}
+El objetivo de las GANs es generar muestras de una distribución, cosa que a priori no parece complicado, existen métodos para generar muestras de variables aleatorias conocidas como por ejemplo la transformada inversa. Sin embargo, supongamos que queremos generar muestras de fotos de perros. Tenemos la seguridad de que la distribución es extremadamente compleja de describir, dado que hay perros de distintos colores, tamaños, razas, etc.
+
+La idea fundamental de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para pagar, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando mal y modifican su técnica, de manera que a lo largo del tiempo aprenden a burlar a la policía, que no es capaz de distinguir billetes reales de falsos. Una representación esquemática se puede ver en la Figura (\ref{esquema})
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.8]{../images/report/scheme.png}
+	\label{esquema}
+	\caption{Diagrama conceptual de las redes generativas antagónicas.}
+\end{figure}
+
+El algoritmo genérico para el entrenamiento de este tipo de redes se describe en el Algoritmo \ref{alg:gan}.
+\begin{algorithm}[h]
+	\For{e in epochs}
+	{
+		\For{k in batches}
+		{
+		Tomar muestra $real$ de imágenes reales\;
+		clasreal = $D(real)$\;
+		Tomar muestra de ruido aleatorio $noise$\;
+		fake = $G(noise)$\;
+		clasfake = $D(G(noise))$
+		}
+	}
+	\caption{Entrenamiento de una red generativa antagónica genérica.}
+	\label{alg:gan}
+\end{algorithm}
 \section{Aspectos teóricos}
-\lipsum
-\section{Aspectos prácticos}
-\lipsum
-\chapter{El principio del arte}
-\lipsum[3]
+Veamos algunos de los resultados teóricos más relevantes:
+\begin{teorema}
+	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
+	\begin{equation}
+	D_G^*(x) = \frac{p_{datos}(x)}{p_{datos}(x) + p_g(x)}
+	\end{equation}
+\end{teorema}
+\begin{proof}
+	El discriminador busca maximizar su función de utilidad, dada por $V(G,D)$
+	\begin{equation}
+	\begin{aligned}
+	V(G,D) &= \int_x p_{datos}(x) \log (D(x)) \mathrm{d}x + \int_z p_z(z) \log(1-D(g(z))) \mathrm{d}z\\
+	&= \int_x p_{datos}(x) \log (D(x)) + p_g(x) \log (1-D(x)) \mathrm{d}x
+	\end{aligned}
+	\end{equation}
+\end{proof}
+
+\section{Otros modelos generativos}
+Variational autoencoders, noise contrastive estimation etc.
+\chapter{Generación de arte}
+En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en PyTorch una red convolucional profunda generativa antagónica, con la cual vamos a generar cuadros.
 \section{DCGAN}
-\lipsum
-\section{Resultados}
-\lipsum
+Las redes convolucionales profundas generativas antagónicas (deep convolutional generative networks (DCGAN)) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes que menciona el artículo son:
+\begin{itemize}
+	\item tal
+	\item cual
+\end{itemize}
+El objetivo es generar arte, por tanto es necesario un conjunto de datos con imágenes de una gran cantidad de cuadros, que hemos obtenido de una competición de Kaggle. Este conjunto de datos consta de aproi
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
+	\label{esqma}
+	\caption{Arquitectura de las redes.}
+\end{figure}
+\section{Metodología y resultados}
+
 \chapter{Conclusión}
-\lipsum[1-3]
+
 
 \bibliography{../bibliography/tfmbib}
 \bibliographystyle{abbrv}
