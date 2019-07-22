@@ -20,7 +20,7 @@ Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio s
 Se ha tratado de hacer el código y los resultados lo más accesibles posible. Para reproducir los experimentos hay que seguir los pasos siguientes:
 
 1. Instalar [Anaconda](https://www.anaconda.com)
-2. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`
+2. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB` en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`
 3. Crear un entorno virtual, introduciendo en la consola `conda create -n tfm_anton python=3.6` y activar el entorno con `conda activate tfm_anton`
 4. Instalar los paquetes del archivo `requirements.txt` introduciendo en la consola `pip install -r requirements.txt`. Por defecto se instalará la versión CPU de PyTorch, Si se quiere hacer el entrenamiento desde cero, es recomendable utilizar una gpu y descargar la versión correspondiente
 5. Ejecutar en la consola `python rm_corrupt.py` para eliminar del conjunto de datos las imágenes corruptas
