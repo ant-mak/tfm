@@ -25,7 +25,7 @@ Se ha tratado de hacer el código y los resultados lo más accesibles posible. P
 4. Instalar los paquetes del archivo `requirements.txt` introduciendo en la consola `pip install -r requirements.txt`. Por defecto se instalará la versión CPU de PyTorch, Si se quiere hacer el entrenamiento desde cero, es recomendable utilizar una gpu y descargar la versión correspondiente
 5. Ejecutar en la consola `python rm_corrupt.py` para eliminar del conjunto de datos las imágenes corruptas
 5. Ejecutar en la consola `jupyter notebook` y abrir el archivo `taltal`
-6. Ejecutar las celdas de manera secuencial
+6. Ejecutar las celdas de manera secuencial (Se incluyen modelos ya entrenados en la carpeta `models` que se pueden cargar y evitar tener que entrenar desde cero)
 
 **Nota:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
 
