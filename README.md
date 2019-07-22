@@ -14,7 +14,7 @@ Imagen
 Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio se incluye:
 - Memoria
 - Presentación
-- Código PyTorch en el que se implementa una DCGAN [https://arxiv.org/abs/1511.06434] para la generación de arte a partir de un conjunto de datos obtenido en Kaggle [https://www.kaggle.com/c/painter-by-numbers]
+- Código PyTorch en el que se implementa una DCGAN [https://arxiv.org/abs/1511.06434] para la generación de arte a partir de un conjunto de datos obtenido en Kaggle [https://www.kaggle.com/c/painter-by-numbers](hola)
 
 ## Instrucciones para reproducir los resultados
 Se ha tratado de hacer el código y los resultados lo más accesibles posible. Para reproducir los experimentos hay que seguir los pasos siguientes:
