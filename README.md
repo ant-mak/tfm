@@ -21,7 +21,7 @@ Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio s
 ## Instrucciones para reproducir los resultados
 Se ha tratado de hacer el código y los resultados lo más accesibles posible. Para reproducir los experimentos hay que seguir los pasos siguientes:
 
-1. Descargar el repositorio o clonarlo (necesario instalar [git](https://git-scm.com)) haciendo `git clone https://github.com/ant-mak/tfm.git`.
+1. Descargar el repositorio o clonarlo (necesario instalar [git](https://git-scm.com)) haciendo ```git clone https://github.com/ant-mak/tfm.git`.
 2. Instalar [Anaconda](https://www.anaconda.com)
 3. Crear un entorno virtual, introduciendo en la consola `conda create -n tfm_anton python=3.6` y activar el entorno con `conda activate tfm_anton`.
 4. Instalar los paquetes del archivo `requirements.txt` introduciendo en la consola `pip install -r requirements.txt`. Por defecto se instalará la versión CPU de PyTorch, Si se quiere hacer el entrenamiento desde cero, es recomendable utilizar una gpu y descargar la versión correspondiente.
