@@ -86,16 +86,19 @@
 \mbox{}\newpage
 
 \chapter{Introducción}
-\cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
+Introducción\footnote{Todo el código de este trabajo se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.} \cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
 
 \chapter{Preliminares}
 
 \section{Conceptos básicos}
 \begin{defn}[Divergencia de Kullback-Leibler]
-	hola
+	KL div
 \end{defn}
 \begin{defn}[Divergencia de Jensen-Shannon]
-	Hola
+	JS div
+\end{defn}
+\begin{defn}[Equilibrio de Nash]
+	Eq. Nash
 \end{defn}
 \section{Redes neuronales}
 
@@ -118,16 +121,19 @@ La idea fundamental de las GANs es poner dos redes neuronales a competir entre s
 
 El algoritmo genérico para el entrenamiento de este tipo de redes se describe en el Algoritmo \ref{alg:gan}.
 \begin{algorithm}[h]
-	\For{e in epochs}
+	\For{Iteraciones de entrenamiento}
 	{
-		\For{k in batches}
-		{
-		Tomar muestra $real$ de imágenes reales\;
-		clasreal = $D(real)$\;
-		Tomar muestra de ruido aleatorio $noise$\;
-		fake = $G(noise)$\;
-		clasfake = $D(G(noise))$
-		}
+	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_g(z)$\;
+	Tomar muestra $(x^{(1)}, x^{(2)}, \ldots, x^{(m)})$ de tamaño $m$ de $p_{data}(x)$\;
+	Actualizar el discriminador ascendiendo su gradiente:
+	$$
+	\nabla_{\theta_d} \frac{1}{m}\sum_{i = 1}^{m}\left[\log D\left( x^{i}\right) + \log \left( 1 - D(G(z^{i}))\right) \right]
+	$$
+	
+	Actualizar el generador ascendiendo su gradiente:
+	$$
+	\nabla_{\theta_g} \frac{1}{m}\sum_{i = 1}^{m} \log \left( 1 - D(G(z^{i}))\right)
+	$$
 	}
 	\caption{Entrenamiento de una red generativa antagónica genérica.}
 	\label{alg:gan}
@@ -153,22 +159,38 @@ Veamos algunos de los resultados teóricos más relevantes:
 \section{Otros modelos generativos}
 Variational autoencoders, noise contrastive estimation etc.
 \chapter{Generación de arte}
-En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en PyTorch una red convolucional profunda generativa antagónica, con la cual vamos a generar cuadros.
+En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{PyTorch} una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar cuadros realistas.
 \section{DCGAN}
-Las redes convolucionales profundas generativas antagónicas (deep convolutional generative networks (DCGAN)) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes que menciona el artículo son:
+Las redes convolucionales profundas generativas antagónicas (deep convolutional generative networks, DCGAN) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes mencionados en el artículo son:
 \begin{itemize}
-	\item tal
-	\item cual
+	\item En el discriminador, utilizar convoluciones con paso en lugar de capas de pooling.
+	\item En el generador, utilizar convoluciones fraccionales con paso en vez de capas de pooling.
+	\item Utilizar BatchNorm tanto para generador como discriminador.
+	\item No utilizar capas fully connected
+	\item Utilizar funciones de activación ReLU en el generador, salvo para la última capa, en la que se propone usar $\tanh$
+	\item Utilizar funciones de activación LeakyReLU en el discriminador.
 \end{itemize}
-El objetivo es generar arte, por tanto es necesario un conjunto de datos con imágenes de una gran cantidad de cuadros, que hemos obtenido de una competición de Kaggle. Este conjunto de datos consta de aproi
+RECORDAR QUE STRIDE Y POOL SON PARECIDOS Y DESCRIBIR LEAKYRELU.
+
+Como hemos dicho, nuestro objetivo es generar arte. Para ello vamos a necesitar un conjunto de datos con imágenes de una gran cantidad de cuadros. Dichas imágenes las hemos obtenido de unacompetición de Kaggle. Este conjunto de datos consta de aproximadamente 100000 imágenes, ocupando un total de 49 GB en el disco duro.
+
+\section{Preprocesado}
+El conjunto de datos tenía algunos defectos, como por ejemplo que había imágenes que no se descargaron correctamente o que el propio conjunto de datos tenía algunas muestras corruptas. Dichas imágenes las eliminamos.
+
+Una vez hemos limpiado el conjunto de datos, es necesario realizar algunas transformaciones para que todo funcione como esperamos. En primer lugar hemos homogeneizado los tamaños y las proporciones. Pasamos así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, les hacemos un recorte centrado y finalmente las cargamos como tensores.
+
+\section{Arquitectura}
+Siguiendo las recomendaciones del artículo \cite{radford2015unsupervised}, hemos decidido utilizar la arquitectura que se muestra en la Figura \ref{esqma}
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
 	\label{esqma}
-	\caption{Arquitectura de las redes.}
+	\caption{Arquitectura de las redes (Cambiar, poner tamaños de entrada y salida).}
 \end{figure}
-\section{Metodología y resultados}
-
+Se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam \cite{kingma2014adam} con una tasa de aprendizaje de $0.0002$.
+\section{Resultados}
+\subsection{Recursos}
+Cabe destacar que ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA, en concreto se ha utilizado una Nvidia Quadro P5000. El entrenamiento de principio a fin ha tardado aproximadamente 24 horas. También se han realizado pruebas con CPU en un portátil de prestaciones modestas y se ha observado que el rendimiento era unas 20 veces menor.
 \chapter{Conclusión}
 
 
