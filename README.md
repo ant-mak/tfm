@@ -25,12 +25,15 @@ Se ha tratado de hacer el código y los resultados lo más accesibles posible. P
 ```
 git clone https://github.com/ant-mak/tfm.git
 ```
+
 2. Instalar [Anaconda](https://www.anaconda.com)
+
 3. Crear un entorno virtual y activarlo, introduciendo en la consola:
 ```
 conda create -n tfm_anton python=3.6
 conda activate tfm_anton
 ```
+
 4. Instalar los paquetes del archivo `requirements.txt` introduciendo en la consola
 ```
 pip install -r requirements.txt
@@ -42,7 +45,7 @@ Por defecto se instalará la versión CPU de PyTorch, Si se quiere hacer el entr
 6. Ejecutar en la consola `python rm_corrupt.py` para eliminar del conjunto de datos las imágenes corruptas.
 
 7.1. [Entrenamiendo desde cero] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
-
+  
 7.2. [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial. (TODO)
 
 **Nota:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
