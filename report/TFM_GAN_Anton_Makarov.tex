@@ -107,24 +107,30 @@ Introducción\footnote{Todo el código de este trabajo se puede encontrar en el re
 \subsection{Redes neuronales convolucionales}
 
 \chapter{Redes generativas antagónicas}
-En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante. 
+En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
 \section{Idea general}
-El objetivo de las GANs es generar muestras de una distribución, cosa que a priori no parece complicado, existen métodos para generar muestras de variables aleatorias conocidas como por ejemplo la transformada inversa. Sin embargo, supongamos que queremos generar muestras de fotos de perros. Tenemos la seguridad de que la distribución es extremadamente compleja de describir, dado que hay perros de distintos colores, tamaños, razas, etc.
+El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
-La idea fundamental de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para pagar, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando mal y modifican su técnica, de manera que a lo largo del tiempo aprenden a burlar a la policía, que no es capaz de distinguir billetes reales de falsos. Una representación esquemática se puede ver en la Figura (\ref{esquema})
+La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura (\ref{esquema})
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.8]{../images/report/scheme.png}
 	\label{esquema}
 	\caption{Diagrama conceptual de las redes generativas antagónicas.}
 \end{figure}
+Podemos traducir esta idea a términos matemáticos de la siguiente manera:
 
-El algoritmo genérico para el entrenamiento de este tipo de redes se describe en el Algoritmo \ref{alg:gan}.
+Para aprender la distribución $p_g$ del generador sobre los datos $x$, definimos una distribución sobre las variables de ruido de entrada $p_z(z)$. Mediante un perceptrón multicapa con parámetros $\theta_g$ definimos la función $G(z;\theta_g)$. Definimos también mediante otro perceptrón multicapa $D(x; \theta_d)$ la probabilidad de que $x$ es una muestra de los datos y no del generador. Entrenamos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados. Al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax:
+\begin{equation}
+\min_G \max_D V(D,G) = \mathbb{E} [\log D(x)] + \mathbb{E} [\log (1- D(G(z)))].
+\end{equation}
+
+En el Algoritmo \ref{alg:gan} describimos lo anterior de manera más concisa y damos una primera idea de cómo se lleva a cabo el entrenamiento.
 \begin{algorithm}[h]
 	\For{Iteraciones de entrenamiento}
 	{
 	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_g(z)$\;
-	Tomar muestra $(x^{(1)}, x^{(2)}, \ldots, x^{(m)})$ de tamaño $m$ de $p_{data}(x)$\;
+	Tomar muestra $(x^{(1)}, x^{(2)}, \ldots, x^{(m)})$ de tamaño $m$ de $p_{d}(x)$\;
 	Actualizar el discriminador ascendiendo su gradiente:
 	$$
 	\nabla_{\theta_d} \frac{1}{m}\sum_{i = 1}^{m}\left[\log D\left( x^{i}\right) + \log \left( 1 - D(G(z^{i}))\right) \right]
@@ -138,8 +144,10 @@ El algoritmo genérico para el entrenamiento de este tipo de redes se describe en
 	\caption{Entrenamiento de una red generativa antagónica genérica.}
 	\label{alg:gan}
 \end{algorithm}
-\section{Aspectos teóricos}
-Veamos algunos de los resultados teóricos más relevantes:
+\section{Bases teóricas}
+
+En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas. Mostraremos que el criterio de entrenamiento nos permite recuperar la distribución de los datos si damos a $G$ y $D$ capacidad suficiente. 
+
 \begin{teorema}
 	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
 	\begin{equation}
@@ -169,10 +177,17 @@ Las redes convolucionales profundas generativas antagónicas (deep convolutional 
 	\item No utilizar capas fully connected
 	\item Utilizar funciones de activación ReLU en el generador, salvo para la última capa, en la que se propone usar $\tanh$
 	\item Utilizar funciones de activación LeakyReLU en el discriminador.
+	\item Inicializar los pesos de ambas redes con una distribución normal.
 \end{itemize}
 RECORDAR QUE STRIDE Y POOL SON PARECIDOS Y DESCRIBIR LEAKYRELU.
 
-Como hemos dicho, nuestro objetivo es generar arte. Para ello vamos a necesitar un conjunto de datos con imágenes de una gran cantidad de cuadros. Dichas imágenes las hemos obtenido de unacompetición de Kaggle. Este conjunto de datos consta de aproximadamente 100000 imágenes, ocupando un total de 49 GB en el disco duro.
+Como hemos dicho, nuestro objetivo es generar arte. Para ello vamos a necesitar un conjunto de datos con imágenes de una gran cantidad de cuadros. Dichas imágenes las hemos obtenido de unacompetición de Kaggle. Este conjunto de datos consta de aproximadamente 100000 imágenes, ocupando un total de 49 GB en el disco duro. Una muestra de dichas imágenes se puede observar en la Figura \ref{img_reales}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.60]{../images/results/original_data.png}
+	\label{img_reales}
+	\caption{Imágenes del conjunto de datos.}
+\end{figure}
 
 \section{Preprocesado}
 El conjunto de datos tenía algunos defectos, como por ejemplo que había imágenes que no se descargaron correctamente o que el propio conjunto de datos tenía algunas muestras corruptas. Dichas imágenes las eliminamos.
@@ -189,6 +204,12 @@ Siguiendo las recomendaciones del artículo \cite{radford2015unsupervised}, hemos
 \end{figure}
 Se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam \cite{kingma2014adam} con una tasa de aprendizaje de $0.0002$.
 \section{Resultados}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.60]{../images/results/generated_data.png}
+	\label{img_generadas}
+	\caption{Imágenes generadas mediante la DCGAN implementada después de 30 épocas de entrenamiento.}
+\end{figure}
 \subsection{Recursos}
 Cabe destacar que ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA, en concreto se ha utilizado una Nvidia Quadro P5000. El entrenamiento de principio a fin ha tardado aproximadamente 24 horas. También se han realizado pruebas con CPU en un portátil de prestaciones modestas y se ha observado que el rendimiento era unas 20 veces menor.
 \chapter{Conclusión}
