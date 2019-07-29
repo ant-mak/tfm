@@ -21,7 +21,7 @@ Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio s
 ## Instrucciones para reproducir los resultados
 Se ha tratado de hacer el código y los resultados lo más accesibles posible. Para reproducir los experimentos hay que seguir los pasos siguientes:
 
-1. Clonar el repositorio (necesario instalar [git](https://git-scm.com)):
+1. Clonar el repositorio (necesario instalar [git](https://git-scm.com)) introduciendo en la consola:
 ```
 git clone https://github.com/ant-mak/tfm.git
 ```
