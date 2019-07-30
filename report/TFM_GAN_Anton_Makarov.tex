@@ -167,21 +167,21 @@ En esta sección realizaremos un análisis de la teoría que hay detrás de las rede
 \section{Otros modelos generativos}
 Variational autoencoders, noise contrastive estimation etc.
 \chapter{Generación de arte}
-En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{PyTorch} una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar cuadros realistas.
+En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en PyTorch una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar imágenes de cuadros realistas.
 \section{DCGAN}
-Las redes convolucionales profundas generativas antagónicas (deep convolutional generative networks, DCGAN) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes mencionados en el artículo son:
+Las redes convolucionales profundas generativas antagónicas (deep convolutional generative adversarial networks, DCGAN) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes mencionados en el artículo son:
 \begin{itemize}
-	\item En el discriminador, utilizar convoluciones con paso en lugar de capas de pooling.
-	\item En el generador, utilizar convoluciones fraccionales con paso en vez de capas de pooling.
+	\item En el discriminador, utilizar convoluciones con stride en lugar de capas de pooling.
+	\item En el generador, utilizar convoluciones fraccionales con stride en lugar de capas de pooling.
 	\item Utilizar BatchNorm tanto para generador como discriminador.
-	\item No utilizar capas fully connected
-	\item Utilizar funciones de activación ReLU en el generador, salvo para la última capa, en la que se propone usar $\tanh$
+	\item No utilizar capas fully connected.
+	\item Utilizar funciones de activación ReLU en el generador, salvo para la última capa, en la que se propone usar $\tanh$.
 	\item Utilizar funciones de activación LeakyReLU en el discriminador.
 	\item Inicializar los pesos de ambas redes con una distribución normal.
 \end{itemize}
 RECORDAR QUE STRIDE Y POOL SON PARECIDOS Y DESCRIBIR LEAKYRELU.
 
-Como hemos dicho, nuestro objetivo es generar arte. Para ello vamos a necesitar un conjunto de datos con imágenes de una gran cantidad de cuadros. Dichas imágenes las hemos obtenido de unacompetición de Kaggle. Este conjunto de datos consta de aproximadamente 100000 imágenes, ocupando un total de 49 GB en el disco duro. Una muestra de dichas imágenes se puede observar en la Figura \ref{img_reales}
+El objetivo que nos hemos propuesto es la generación de cuadros realistas, para ello, es necesario un amplio conjunto de datos con cuadros de distintos artístas, épocas y estilos. Hemos encontrado en  una competición de Kaggle un conjunto de datos con las características deseadas, con más de 100000 imágenes, ocupando aproximadamente 49 GB. Una muestra de dichas imágenes se puede observar en la Figura \ref{img_reales}
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{../images/results/original_data.png}
@@ -189,20 +189,22 @@ Como hemos dicho, nuestro objetivo es generar arte. Para ello vamos a necesitar 
 	\caption{Imágenes del conjunto de datos.}
 \end{figure}
 
-\section{Preprocesado}
-El conjunto de datos tenía algunos defectos, como por ejemplo que había imágenes que no se descargaron correctamente o que el propio conjunto de datos tenía algunas muestras corruptas. Dichas imágenes las eliminamos.
+\subsection{Preprocesado}
+El conjunto de datos tenía algunos defectos, como por ejemplo imágenes descargadas incorrectamente o imágenes corruptas en el propio conjunto de datos. Se ha tomado la decisión de eliminar dichas imágenes. ya que son pocas y no hay una manera directa de recuperarlas.
 
-Una vez hemos limpiado el conjunto de datos, es necesario realizar algunas transformaciones para que todo funcione como esperamos. En primer lugar hemos homogeneizado los tamaños y las proporciones. Pasamos así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, les hacemos un recorte centrado y finalmente las cargamos como tensores.
+Una vez limpio el conjunto de datos, es necesario realizar algunas transformaciones para que, posteriormente, nuestras redes neuronales puedan utilizar las imágenes. En primer lugar hemos homogeneizado los tamaños y las proporciones. Pasamos así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, realizamos un recorte centrado y finalmente las cargamos como tensores.
 
-\section{Arquitectura}
-Siguiendo las recomendaciones del artículo \cite{radford2015unsupervised}, hemos decidido utilizar la arquitectura que se muestra en la Figura \ref{esqma}
+\subsection{Arquitectura}
+Siguiendo las recomendaciones del artículo \cite{radford2015unsupervised}, hemos decidido utilizar la arquitectura que se muestra en la Figura \ref{esqma}. También hemos inicializado los pesos con una distribución normal $\mathcal{N}()$ y hemos seleccionado un tamaño de batch de 128.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
 	\label{esqma}
 	\caption{Arquitectura de las redes (Cambiar, poner tamaños de entrada y salida).}
 \end{figure}
-Se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam \cite{kingma2014adam} con una tasa de aprendizaje de $0.0002$.
+La red se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam \cite{kingma2014adam} con una tasa de aprendizaje de $0.0002$ y $\beta = (0.5,0.999)$.
+\subsection{Recursos}
+Cabe destacar que ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA, en concreto se ha utilizado una Nvidia Quadro P5000. El entrenamiento de principio a fin ha tardado aproximadamente 24 horas. También se han realizado pruebas con CPU en un portátil de prestaciones modestas y se ha observado que el rendimiento era unas 20 veces menor.
 \section{Resultados}
 \begin{figure}[h]
 	\centering
@@ -210,8 +212,6 @@ Se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam 
 	\label{img_generadas}
 	\caption{Imágenes generadas mediante la DCGAN implementada después de 30 épocas de entrenamiento.}
 \end{figure}
-\subsection{Recursos}
-Cabe destacar que ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA, en concreto se ha utilizado una Nvidia Quadro P5000. El entrenamiento de principio a fin ha tardado aproximadamente 24 horas. También se han realizado pruebas con CPU en un portátil de prestaciones modestas y se ha observado que el rendimiento era unas 20 veces menor.
 \chapter{Conclusión}
 
 
