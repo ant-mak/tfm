@@ -89,8 +89,11 @@
 Introducción\footnote{Todo el código de este trabajo se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.} \cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
 
 \chapter{Preliminares}
-
+En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, haciendo hincapié en las redes convolucionales.
 \section{Conceptos básicos}
+\begin{defn}[Problemas en aprendizaje automático]
+	hola
+\end{defn}
 \begin{defn}[Divergencia de Kullback-Leibler]
 	KL div
 \end{defn}
@@ -103,15 +106,39 @@ Introducción\footnote{Todo el código de este trabajo se puede encontrar en el re
 \section{Redes neuronales}
 
 \subsection{Aprendizaje profundo}
+El aprendizaje profundo es un subgrupo de algoritmos de aprendizaje automático que buscan abstraer características de alto nivel presentes en los datos, utilizando generalmente, arquitecturas basadas en redes neuronales con una gran cantidad de capas.
 
+En la actualidad son muy populares debido a su enorme potencial para resolver problemas complejos en ámbitos como la visión por computador o  el procesamiento del lenguaje natural, entre otros. Dicho potencial no ha podido ser aprovechado hasta hace muy poco debido a la escasez, por un lado, de conjuntos de datos adecuados y por otro, de recursos computacionales, ya que estos métodos requieren unas capacidades de cálculo y tamaños de conjuntos de datos muy superiores a otros métodos más tradicionales.
 \subsection{Redes neuronales convolucionales}
+Dado que nuestro objetivo es describir las redes generativas antagónicas y, más concretamente, utilizarlas para la generación de imágenes, es imprescindible introducir algunos de los conceptos más importantes de la familia de arquitecturas de aprendizaje profundo que están a la vanguardia en el campo de la visión por computador, las redes neuronales convolucionales (convolutional neural networks o CNNs en inglés).
+
+Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el neocognitrón \cite{fukushima1980}, que posteriormente sería tomado por Yann LeCun, que introdujo la mayoría de conceptos por los que conocemos este tipo de redes hoy en día.
+
+La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos en una imagen de un perro, parece razonable que intentemos identificar que efectivamente lo que vemos es un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc. en lugar de todos los píxeles a la vez sin ningún tipo de relación espacial entre si. Es destacable que este tipo de filtros ya se hacían antes de las redes convolucionales, seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características, aprendiendo durante el entrenamiento los filtros más idóneos.
+
+Veamos ahora en detalle el funcionamiento de las redes convolucionales a la vez que desarrollamos los conceptos básicos que nos serán de utilidad a lo largo del resto del trabajo.
+\begin{defn}[Capa convolucional]
+	STRIDE
+\end{defn}
+
+\begin{defn}[Capa de Pooling]
+	hola
+\end{defn}
+
+\begin{defn}[Capa de Batch Normalization]
+	hola
+\end{defn}
+
+\begin{defn}[ReLU]
+	hola
+\end{defn}
 
 \chapter{Redes generativas antagónicas}
 En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
-La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura (\ref{esquema})
+La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura \ref{esquema}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.8]{../images/report/scheme.png}
@@ -167,9 +194,9 @@ En esta sección realizaremos un análisis de la teoría que hay detrás de las rede
 \section{Otros modelos generativos}
 Variational autoencoders, noise contrastive estimation etc.
 \chapter{Generación de arte}
-En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en PyTorch una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar imágenes de cuadros realistas.
+En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch} una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar imágenes de cuadros realistas.
 \section{DCGAN}
-Las redes convolucionales profundas generativas antagónicas (deep convolutional generative adversarial networks, DCGAN) son una extensión de las GANs tradicionales, que dan una serie de recomendaciones a la hora de implementarlas para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes mencionados en el artículo son:
+Las redes convolucionales profundas generativas antagónicas (deep convolutional generative adversarial networks, DCGAN) son una extensión de las GANs tradicionales, que implementan una serie de recomendaciones para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes que se pueden extraer de \cite{radford2015unsupervised} son:
 \begin{itemize}
 	\item En el discriminador, utilizar convoluciones con stride en lugar de capas de pooling.
 	\item En el generador, utilizar convoluciones fraccionales con stride en lugar de capas de pooling.
