@@ -91,11 +91,10 @@ Introducción\footnote{Todo el código de este trabajo se puede encontrar en el re
 \chapter{Preliminares}
 En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, haciendo hincapié en las redes convolucionales.
 \section{Conceptos básicos}
-El aprendizaje automático tiene como objetivo principal el desarrollo de técnicas que permitan aprender a las computadoras de manera autónoma, sin ser programadas explícitamente para ello, a partir de datos.
+El aprendizaje automático tiene como objetivo principal el desarrollo de técnicas que permitan aprender a las máquinas de manera autónoma, sin ser programadas explícitamente para ello, a partir de datos. Dentro del aprendizaje automático existen problemas de muy diversa índole, una manera de clasificarlos es la basada en el tipo de información disponible. En las siguientes secciones describiremos brevemente la clasificación usual.
 
-Dentro del aprendizaje automático existen problemas de muy diversa índole, una manera de clasificarlos es la basada en el tipo de información disponible.
-
-\textbf{Aprendizaje supervisado.} Los problemas supervisados se caracterizan porque se dispone tanto una serie de muestras como de la información sobre cual debe ser el resultado para cada una de ellas. Algunos de los problemas típicos ante los que nos podemos encontrar dentro del aprendizaje supervisado son:
+\subsection{Aprendizaje supervisado}
+Los problemas de aprendizaje supervisado se caracterizan por la disponibilidad tanto de una serie de muestras $X$ como de la información sobre cuál debe ser el resultado $y$ para cada una de ellas. Buscan encontrar una función que, a partir de una muestra devuelva el resultado $y$ correspondiente. Algunos de los problemas típicos ante los que nos podemos encontrar dentro del aprendizaje supervisado son:
 \begin{itemize}
 	\item Predecir el precio de un piso a partir del número de habitaciones, de los metros cuadrados que tiene, del barrio etc.
 	\item Predecir si una transacción es o no fraudulenta a partir de la cantidad transferida, del lugar en el que ha sido realizada, de las transacciones realizadas durante los días previos etc.
@@ -103,36 +102,24 @@ Dentro del aprendizaje automático existen problemas de muy diversa índole, una m
 \end{itemize}
 Algunos de los algoritmos más conocidos para la resolución de problemas de aprendizaje supervisado son la regresión lineal y logística, las máquinas de vector soporte, los árboles de decisión o las redes neuronales.
 
-\textbf{Aprendizaje no supervisado.} En el caso de los problemas no supervisados tan solo se dispone de las muestras, sin etiqueta alguna y se busca recuperar algún tipo de estructura de los datos. Algunos de los problemas típicos del aprendizaje no supervisado son:
+\subsection{Aprendizaje no supervisado}
+En el caso de los problemas de aprendizaje no supervisado tan solo se dispone de las muestras $X$, sin etiqueta alguna y se busca recuperar la estructura de los datos. Algunos de los problemas típicos del aprendizaje no supervisado son:
 \begin{itemize}
 	\item Segmentación para campañas de publicidad, en las que se dispone de datos socioeconómicos de clientes y se les quiere dividir en varias clases según sus intereses.
 	\item Generación de cuadros nuevos a partir de imágenes de cuadros reales.
 \end{itemize}
-Algunos algoritmos propios del aprendizaje no supervisado son el K-means, 
+Algunos algoritmos utilizados en aprendizaje no supervisado son el K-means o las redes neuronales.
 
-\textbf{Aprendizaje por refuerzo.} El aprendizaje por refuerzo busca determinar la mejor acción a realizar en vista de un entorno determinado para maximizar la recompensa obtenida por dicha acción. Algunos problemas dentro de este tipo de aprendizaje son:
+\subsection{Aprendizaje por refuerzo}
+El aprendizaje por refuerzo busca determinar la mejor acción a realizar ante una situación concreta para maximizar la recompensa obtenida por dicha acción. Algunos problemas dentro de este tipo de aprendizaje son:
 \begin{itemize}
 	\item Enseñan a una máquina a jugar al ajedrez, Go, StarCraft etc.
 	\item Enseñar a una máquina a conducir.
 \end{itemize}
 Los algoritmos más conocidos dentro de este área son el Q-learning, SARSA o DQN.
 
-Finalizamos esta introducción con un concepto algo menos usual en el ámbito del aprendizaje automático pero que nos será imprescindible para desarollar las redes generativas antagónicas.
-\begin{defn}[Equilibrio de Nash]
-	El equilibrio de Nash es una situación en la que ninguno de los jugadores tiene incentivo para cambiar su estrategia teniendo en cuenta las estrategias del resto de jugadores.
-\end{defn}
 \section{Redes neuronales}
-Las redes neuronales son una clase de algoritmos de aprendizaje automático que en un principio fueron inspiradas por el estudio de las neuronas en el cerebro. Están formadas por una gran cantidad de unidades de procesamiento sencillas que funcionan con un grado de interconexión muy alto y se comunican de forma sencilla. Las redes neuronales se adaptan mediante la modificación de los pesos de las conexiones. Una red neuronal tiene 3 elementos básicos:
-
-\begin{itemize}
-	\item Caracterización de la neurona
-	\item Definición de la topología de interconexión
-	\item Definición de reglas para el ajuste de pesos
-\end{itemize}
-
-La caracterización de la neurona consta de la definición del vector de entrada, al que se aplica una serie de pesos. La topología define
-
-
+Las redes neuronales son una clase de algoritmos de aprendizaje automático inspiradas en el estudio biológico de las neuronas en el cerebro. Cabe destacar que pese a que toman la idea de las neuronas biológicas, no pretenden modelizarlas ni replicar su funcionamiento. Están formadas por una gran cantidad de unidades de procesamiento (o neuronas) interconectadas entre sí. Las fuerzas (o pesos) de cada una de dichas conexiones se modifica en el proceso de entrenamiento con el objetivo de minimizar una cierta función de coste. La minimización se lleva a cabo mediante el algoritmo de descenso en la dirección del gradiente o alguna de sus variantes creadas específicamente para las redes neuronales (SGD, RMSprop, Adam, etc.). Para calcular el gradiente se utiliza el algoritmo de retropropagación, basado en la regla de la cadena. Existe una gran variedad de redes neuronales según el tipo de problema de aprendizaje que se quiera resolver con ellas, la caracterización de las neuronas y la estructura de conexiones de la red. Algunas de las más conocidas son el perceptrón multicapa, las redes convolucionales o las redes recurrentes.
 
 \section{Aprendizaje profundo}
 El aprendizaje profundo es un subgrupo de algoritmos de aprendizaje automático que buscan abstraer características de alto nivel presentes en los datos, utilizando generalmente, arquitecturas basadas en redes neuronales con una gran cantidad de capas.
@@ -144,12 +131,12 @@ Dado que nuestro objetivo es describir las redes generativas antagónicas y, más 
 
 Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el neocognitrón \cite{fukushima1980neo} que, posteriormente, sería tomado por Yann LeCun, que describió la mayoría de conceptos tal como los conocemos hoy en día.
 
-La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos en una imagen de un perro, parece razonable que intentemos identificar que efectivamente nos encontramos ante un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc. en lugar de todos los píxeles a la vez sin ningún tipo de relación espacial entre si. Es destacable que este tipo de filtros ya se hacían antes de las redes convolucionales, seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características, aprendiendo durante el entrenamiento los filtros más idóneos.
+La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos en una imagen de un perro, parece razonable que intentemos identificar que efectivamente nos encontramos ante un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc. en lugar de todos los píxeles a la vez sin ningún tipo de relación espacial entre si. Es destacable que este tipo de filtros ya se hacían antes de las redes convolucionales, detectando por ejemplo líneas horizontales o verticales y seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características y aprendiendo durante el entrenamiento los filtros más idóneos para el problema.
 
 Veamos ahora en detalle el funcionamiento de las redes convolucionales a la vez que desarrollamos los conceptos básicos que nos serán de utilidad a lo largo del resto del trabajo.
 
 \begin{defn}
-	Una imagen a color se puede definir como un tensor, con altura, y anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura tenemos una representación de esta idea.
+	Una imagen a color se puede definir como un tensor, con altura, anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura tenemos una representación de esta idea.
 \end{defn}
 
 Una vez definida la imagen formalmente, podemos comenzar con la descripción de la capa de convolución. La función que desempeña es la de extraer características de una imagen de manera automática. Para ello, recorre el tensor de entrada secuencialmente con una cuadrícula de tamaño predeterminado, aplicando a cada una de las posiciones de la cuadrícula uno o varios filtros (\textbf{Kernels} en inglés) cuyos coeficientes son aprendidos por la red. La salida de una operación de convolución recibe el nombre de mapa de características.
@@ -170,7 +157,7 @@ Después de la capa de convolución se suele realizar una reducción de muestreo (\
 
 Recientemente se ha incorporado una técnica para mejorar la estabilidad en el entrenamiento de redes convolucionales, llamada \textbf{Batch Normalization} \cite{ioffe2015batch}. La idea fundamental es, si normalizamos los datos antes de introducirlos en la capa de entrada para reducir las influencias de las magnitudes de las variables y ajustarlos a una distribución, ¿por qué no hacer lo mismo en todas las capas?
 
-Dado que los algoritmos de optimización pueden deshacer la normalización que introduzcamos si con ello reducen el valor de la función objetivo, es necesario introducir dos parámetros adicionales $\gamma$ y $\beta$ que serán aprendidos por la red. En el algoritmo \ref{alg:batchnorm} mostramos un breve esquema del funcionamiento, para más detalles se puede consultar \cite{ioffe2015batch}.
+Dado que los algoritmos de optimización pueden deshacer la normalización que introduzcamos si con ello reducen el valor de la función objetivo, es necesario introducir dos parámetros adicionales $\gamma$ y $\beta$ que serán aprendidos por la red. En el Algoritmo \ref{alg:batchnorm} mostramos un breve esquema del funcionamiento, para más detalles se puede consultar \cite{ioffe2015batch}.
 
 \begin{algorithm}[h]
 	Calcular la media del batch: $\mu_B = \frac{1}{m} \sum_{i=1}^m x_i$\;
