@@ -91,21 +91,54 @@ Introducción\footnote{Todo el código de este trabajo se puede encontrar en el re
 \chapter{Preliminares}
 En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, haciendo hincapié en las redes convolucionales.
 \section{Conceptos básicos}
-\begin{defn}[Divergencia de Kullback-Leibler]
-	KL div
-\end{defn}
-\begin{defn}[Divergencia de Jensen-Shannon]
-	JS div
-\end{defn}
+El aprendizaje automático tiene como objetivo principal el desarrollo de técnicas que permitan aprender a las computadoras de manera autónoma, sin ser programadas explícitamente para ello, a partir de datos.
+
+Dentro del aprendizaje automático existen problemas de muy diversa índole, una manera de clasificarlos es la basada en el tipo de información disponible.
+
+\textbf{Aprendizaje supervisado.} Los problemas supervisados se caracterizan porque se dispone tanto una serie de muestras como de la información sobre cual debe ser el resultado para cada una de ellas. Algunos de los problemas típicos ante los que nos podemos encontrar dentro del aprendizaje supervisado son:
+\begin{itemize}
+	\item Predecir el precio de un piso a partir del número de habitaciones, de los metros cuadrados que tiene, del barrio etc.
+	\item Predecir si una transacción es o no fraudulenta a partir de la cantidad transferida, del lugar en el que ha sido realizada, de las transacciones realizadas durante los días previos etc.
+	\item Determinar si una imágen es un perro o un gato
+\end{itemize}
+Algunos de los algoritmos más conocidos para la resolución de problemas de aprendizaje supervisado son la regresión lineal y logística, las máquinas de vector soporte, los árboles de decisión o las redes neuronales.
+
+\textbf{Aprendizaje no supervisado.} En el caso de los problemas no supervisados tan solo se dispone de las muestras, sin etiqueta alguna y se busca recuperar algún tipo de estructura de los datos. Algunos de los problemas típicos del aprendizaje no supervisado son:
+\begin{itemize}
+	\item Segmentación para campañas de publicidad, en las que se dispone de datos socioeconómicos de clientes y se les quiere dividir en varias clases según sus intereses.
+	\item Generación de cuadros nuevos a partir de imágenes de cuadros reales.
+\end{itemize}
+Algunos algoritmos propios del aprendizaje no supervisado son el K-means, 
+
+\textbf{Aprendizaje por refuerzo.} El aprendizaje por refuerzo busca determinar la mejor acción a realizar en vista de un entorno determinado para maximizar la recompensa obtenida por dicha acción. Algunos problemas dentro de este tipo de aprendizaje son:
+\begin{itemize}
+	\item Enseñan a una máquina a jugar al ajedrez, Go, StarCraft etc.
+	\item Enseñar a una máquina a conducir.
+\end{itemize}
+Los algoritmos más conocidos dentro de este área son el Q-learning, SARSA o DQN.
+
+Finalizamos esta introducción con un concepto algo menos usual en el ámbito del aprendizaje automático pero que nos será imprescindible para desarollar las redes generativas antagónicas.
 \begin{defn}[Equilibrio de Nash]
-	Eq. Nash
+	El equilibrio de Nash es una situación en la que ninguno de los jugadores tiene incentivo para cambiar su estrategia teniendo en cuenta las estrategias del resto de jugadores.
 \end{defn}
 \section{Redes neuronales}
+Las redes neuronales son una clase de algoritmos de aprendizaje automático que en un principio fueron inspiradas por el estudio de las neuronas en el cerebro. Están formadas por una gran cantidad de unidades de procesamiento sencillas que funcionan con un grado de interconexión muy alto y se comunican de forma sencilla. Las redes neuronales se adaptan mediante la modificación de los pesos de las conexiones. Una red neuronal tiene 3 elementos básicos:
 
-\subsection{Aprendizaje profundo}
+\begin{itemize}
+	\item Caracterización de la neurona
+	\item Definición de la topología de interconexión
+	\item Definición de reglas para el ajuste de pesos
+\end{itemize}
+
+La caracterización de la neurona consta de la definición del vector de entrada, al que se aplica una serie de pesos. La topología define
+
+
+
+\section{Aprendizaje profundo}
 El aprendizaje profundo es un subgrupo de algoritmos de aprendizaje automático que buscan abstraer características de alto nivel presentes en los datos, utilizando generalmente, arquitecturas basadas en redes neuronales con una gran cantidad de capas.
 
 En la actualidad son muy populares debido a su enorme potencial para resolver problemas complejos en ámbitos como la visión por computador o  el procesamiento del lenguaje natural, entre otros. Dicho potencial no ha podido ser aprovechado hasta hace muy poco debido a la escasez, por un lado, de conjuntos de datos adecuados y por otro, de recursos computacionales, ya que estos métodos requieren unas capacidades de cálculo y dimensiones de conjuntos de datos muy superiores a otros métodos más tradicionales.
+
 \subsection{Redes neuronales convolucionales}
 Dado que nuestro objetivo es describir las redes generativas antagónicas y, más concretamente, utilizarlas para la generación de imágenes, es imprescindible introducir algunos de los conceptos más importantes de la familia de arquitecturas de aprendizaje profundo que están a la vanguardia en el campo de la visión por computador, las redes neuronales convolucionales (\textbf{CNNs} o Convolutional Neural Networks en inglés).
 
@@ -114,25 +147,26 @@ Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el 
 La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos en una imagen de un perro, parece razonable que intentemos identificar que efectivamente nos encontramos ante un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc. en lugar de todos los píxeles a la vez sin ningún tipo de relación espacial entre si. Es destacable que este tipo de filtros ya se hacían antes de las redes convolucionales, seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características, aprendiendo durante el entrenamiento los filtros más idóneos.
 
 Veamos ahora en detalle el funcionamiento de las redes convolucionales a la vez que desarrollamos los conceptos básicos que nos serán de utilidad a lo largo del resto del trabajo.
+
 \begin{defn}
-	Una imagen a color se puede definir como un tensor, con altura, y anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura \ref{image_definition} tenemos una representación de esta idea.
+	Una imagen a color se puede definir como un tensor, con altura, y anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura tenemos una representación de esta idea.
 \end{defn}
 
 Una vez definida la imagen formalmente, podemos comenzar con la descripción de la capa de convolución. La función que desempeña es la de extraer características de una imagen de manera automática. Para ello, recorre el tensor de entrada secuencialmente con una cuadrícula de tamaño predeterminado, aplicando a cada una de las posiciones de la cuadrícula uno o varios filtros (\textbf{Kernels} en inglés) cuyos coeficientes son aprendidos por la red. La salida de una operación de convolución recibe el nombre de mapa de características.
 
-En la Figura \ref{conv} tenemos una representación esquemática de todos los elementos involucrados. En la parte derecha está representada en color azul una imagen de $5\times 5$ píxeles en $3$ canales: rojo, verde y azul. Los bordes de color gris son un relleno (\textbf{Padding} en inglés) de ceros cuya función es recoger mejor la información de los bordes de la imagen y modular las dimensiones de salida. La imagen está siendo recorrida por una cuadrícula $3 \times 3$ con un desplazamiento (\textbf{Stride} en inglés) de tamaño $2$, es decir, en cada paso se mueve dos posiciones hacia la derecha y al llegar al final de la línea baja dos posición, colocándose de nuevo en la izquierda. En la parte central se sitúan los filtros, en este caso dos, que generan de este modo dos mapas de características distintos, representados a la izquierda. Estos filtros funcionan de la manera siguiente: primero se realiza un producto elemento a elemento entre la cuadrícula y el filtro en cada canal de color y después se suman los resultados, dando lugar a un elemento del mapa de características.
+En la Figura tenemos una representación esquemática de todos los elementos involucrados. En la parte derecha está representada en color azul una imagen de $5\times 5$ píxeles en $3$ canales: rojo, verde y azul. Los bordes de color gris son un relleno (\textbf{Padding} en inglés) de ceros cuya función es recoger mejor la información de los bordes de la imagen y modular las dimensiones de salida. La imagen está siendo recorrida por una cuadrícula $3 \times 3$ con un desplazamiento (\textbf{Stride} en inglés) de tamaño $2$, es decir, en cada paso se mueve dos posiciones hacia la derecha y al llegar al final de la línea baja dos posición, colocándose de nuevo en la izquierda. En la parte central se sitúan los filtros, en este caso dos, que generan de este modo dos mapas de características distintos, representados a la izquierda. Estos filtros funcionan de la manera siguiente: primero se realiza un producto elemento a elemento entre la cuadrícula y el filtro en cada canal de color y después se suman los resultados, dando lugar a un elemento del mapa de características.
 
 En general se puede calcular la dimensión de salida de una capa convolucional mediante la siguiente fórmula:
 \begin{equation*}
 O = \frac{W-K+2P}{S}+1,
 \end{equation*}
-donde W es el tamaño de entrada, $K$ el tamaño del filtro, $P$ el padding y $S$ la longitud del paso. En nuestro ejemplo por tanto tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$ y, como hemos utilizado dos filtros, tendrá profundidad $2$, en notación común $3\times 3\times 2$.
+donde $W$ es el tamaño de entrada, $K$ el tamaño del filtro, $P$ el padding y $S$ la longitud del paso. En nuestro ejemplo por tanto tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$ y, como hemos utilizado dos filtros, tendrá profundidad $2$, en notación común $3\times 3\times 2$.
 
 \begin{obs}
 	Como se puede ver en la fórmula, el parámetro stride influye en la dimensión de salida, cosa que utilizaremos extensivamente en las GANs.
 \end{obs}
 
-Después de la capa de convolución se suele realizar una reducción de muestreo (\textbf{Pooling} en inglés), con el objetivo de reducir la dimensión de los mapas de características y abstraer su contenido para conseguir que la red generalice mejor. Pensemos por ejemplo en un mapa de características que identifica líneas horizontales. No necesitamos saber exactamente dónde tenemos una línea horizontal, nos basta con saber que hay una en el centro de la imagen. La capa de pooling toma cada uno de los mapas de características obtenidos y lo divide en regiones. A los elementos de cada región les aplica una operación para comprimir la información que contienen. Las operaciones más utilizadas son el máximo, la media o el mínimo. En la Figura \ref{pool} observamos de manera esquemática un mapa de características $4 \times 4$ que se ha dividido en $4$ regiones $2 \times 2$, a las que se aplica la función máximo.
+Después de la capa de convolución se suele realizar una reducción de muestreo (\textbf{Pooling} en inglés), con el objetivo de reducir la dimensión de los mapas de características y abstraer su contenido para conseguir que la red generalice mejor. Pensemos por ejemplo en un mapa de características que identifica líneas horizontales. No necesitamos saber exactamente dónde tenemos una línea horizontal, nos basta con saber que hay una en el centro de la imagen. La capa de pooling toma cada uno de los mapas de características obtenidos y lo divide en regiones. A los elementos de cada región les aplica una operación para comprimir la información que contienen. Las operaciones más utilizadas son el máximo, la media o el mínimo. En la Figura observamos de manera esquemática un mapa de características $4 \times 4$ que se ha dividido en $4$ regiones $2 \times 2$, a las que se aplica la función máximo.
 
 Recientemente se ha incorporado una técnica para mejorar la estabilidad en el entrenamiento de redes convolucionales, llamada \textbf{Batch Normalization} \cite{ioffe2015batch}. La idea fundamental es, si normalizamos los datos antes de introducirlos en la capa de entrada para reducir las influencias de las magnitudes de las variables y ajustarlos a una distribución, ¿por qué no hacer lo mismo en todas las capas?
 
@@ -149,9 +183,10 @@ Dado que los algoritmos de optimización pueden deshacer la normalización que int
 
 Finalmente hablemos de las funciones de activación. Un problema común de las funciones tradicionales como la sigmoide o la tangente hiperbólica es que en redes profundas puede dar lugar al fenómeno conocido como desvanecimiento del gradiente, que ocurre cuando el gradiente se aproxima excesivamente a cero, impidiendo el entrenamiento de la red. Por ejemplo en el caso de la tangente hiperbólica, tenemos que su derivada se encuentra entre cero y uno. Dado que las redes neuronales utilizan el algoritmo de retropropagación, que a su vez está basado en la regla de la cadena, estaríamos multiplicando cantidades menores que uno tantas veces como capas tengamos, reduciendo de este modo de manera considerable el gradiente y haciendo el uso de estas funciones en redes de muchas capas inapropiado.
 
-Por este motivo es necesario definir otras funciones que sigan siendo no lineales pero tengan un mejor comportamiento ante estos escenarios. Una de las más utilizadas es la ReLU.
-\begin{defn}[ReLU]
-	La función de activación unidad lineal rectificada (REctified Linear Unit o ReLU en inglés) se define como:
+Por este motivo es necesario definir otras funciones que sigan siendo no lineales pero tengan un mejor comportamiento ante estos escenarios.
+
+\begin{defn}
+	La función de activación unidad lineal rectificada (\textbf{ReLU} o REctified Linear Unit en inglés) se define como:
 	\begin{equation*}
 	f(x) = \max(0,x)
 	\end{equation*}
@@ -165,7 +200,14 @@ Por este motivo es necesario definir otras funciones que sigan siendo no lineale
 	\end{equation*}
 \end{defn}
 
-Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar por ejemplo un perceptrón multicapa. En la Figura \ref{cnn} se puede observar una arquitectura de red convolucional como la que hemos descrito.
+Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar por ejemplo un perceptrón multicapa. En la Figura \ref{cnnf} se puede observar una arquitectura de red convolucional como la que hemos descrito.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.4]{../images/report/try.png}
+	\label{cnnf}
+	\caption{Esquema de una red convolucional sencilla.}
+\end{figure}
 
 \chapter{Redes generativas antagónicas}
 En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
