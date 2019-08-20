@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt]{report}
 
 \usepackage{graphicx}
+\usepackage{subcaption}
 
 \usepackage[english, spanish]{babel}
 \usepackage[latin1]{inputenc}
@@ -90,6 +91,7 @@ Introducción\footnote{Todo el código de este trabajo se puede encontrar en el re
 
 \chapter{Preliminares}
 En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, prestando especial atención a las redes convolucionales.
+
 \section{Conceptos básicos}
 El aprendizaje automático tiene como objetivo principal el desarrollo de técnicas que permitan aprender a las máquinas de manera autónoma, sin ser programadas explícitamente para ello, a partir de datos. Dentro del aprendizaje automático existen problemas de muy diversa índole; una manera de clasificarlos es la basada en el tipo de información disponible. En las siguientes secciones describiremos brevemente la clasificación más habitual.
 
@@ -129,32 +131,34 @@ En la actualidad son muy populares debido a su enorme potencial para resolver pr
 \subsection{Redes neuronales convolucionales}
 Dado que nuestro objetivo es describir las redes generativas antagónicas y, más concretamente, utilizarlas para la generación de imágenes, es imprescindible introducir algunos de los conceptos más importantes de la familia de arquitecturas de aprendizaje profundo que están a la vanguardia en el campo de la visión por computador, las redes neuronales convolucionales (\textbf{CNNs} o Convolutional Neural Networks en inglés).
 
-Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el neocognitrón \cite{fukushima1980neo} que, posteriormente, sería tomado por Yann LeCun, que describió la mayoría de conceptos tal como los conocemos hoy en día.
+Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el Neocognitrón \cite{fukushima1980neo} que, posteriormente, sería tomado por Yann LeCun, que describió la mayoría de conceptos tal como los conocemos hoy en día.
 
 La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos, por ejemplo, en una imagen de un perro. Parece razonable que intentemos identificar que efectivamente nos encontramos ante un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc., en lugar de en todos los píxeles a la vez sin ningún tipo de relación espacial entre sí. Es destacable que este tipo de filtros ya se utilizaba antes de las redes convolucionales, detectando por ejemplo líneas horizontales o verticales y seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características y aprendiendo durante el entrenamiento los filtros más idóneos para el problema.
 
 Veamos ahora en detalle el funcionamiento de las redes convolucionales a la vez que desarrollamos los conceptos básicos que nos serán de utilidad a lo largo del resto del trabajo.
 
 \begin{defn}
-	Una imagen a color se puede definir como un tensor, con altura, anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura \ref{img:sch} tenemos una representación de esta idea.
+	Una imagen a color se puede definir como un tensor, con altura, anchura y profundidad. Las dos primeras dimensiones nos indican el tamaño de la imagen, por ejemplo $64 \times 64$ píxeles. La profundidad contiene los canales de color, generalmente rojo, verde y azul (\textbf{RGB} o Red Green Blue en inglés) con una cierta intensidad representada en un rango de $0$ a $255$. Mediante la combinación de dichos canales se forman las imágenes a color a las que estamos acostumbrados. En la Figura \ref{img:rgb} tenemos una representación de esta idea.
 \end{defn}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.4]{../images/report/image_repr.pdf}
 	\caption{Representación esquemática de una imagen.}
-	\label{img:sch}
+	\label{img:rgb}
 \end{figure}
 
 Una vez definida la imagen formalmente, podemos comenzar con la descripción de la capa de convolución. La función que desempeña es la de extraer características de una imagen de manera automática. Para ello, recorre el tensor de entrada secuencialmente con una cuadrícula de tamaño predeterminado, aplicando a cada una de las posiciones de la cuadrícula uno o varios filtros (\textbf{Kernels} en inglés) cuyos coeficientes son aprendidos por la red. La salida de una operación de convolución recibe el nombre de mapa de características.
 
 En la Figura \ref{conv} tenemos una representación esquemática de todos los elementos involucrados. En la parte superior está representada una imagen de $5\times 5$ píxeles en $3$ canales: rojo, verde y azul. Los bordes de color gris son un relleno (\textbf{Padding} en inglés) de ceros cuya función es recoger mejor la información de los bordes de la imagen y modular las dimensiones de salida. La imagen está siendo recorrida por una cuadrícula $3 \times 3$ con un desplazamiento (\textbf{Stride} en inglés) de tamaño $2$, es decir, en cada paso se mueve dos posiciones hacia la derecha y al llegar al final de la línea baja dos posiciones, colocándose de nuevo a la izquierda. En la parte inferior se sitúan los filtros, que generan de el mapa de características representado a la derecha. Estos filtros funcionan de la manera siguiente: primero se realiza un producto elemento a elemento entre la cuadrícula y el filtro en cada canal de color, se suman el resultado del producto y, finalmente, se suman los resultados de cada filtro, dando lugar a un elemento del mapa de características.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.4]{../images/report/convolut.pdf}
 	\caption{Diagrama ilustrativo de la operación de convolución.}
 	\label{conv}
-\end{figure} 
+\end{figure}
+
 En general se puede calcular la dimensión de salida de una capa convolucional mediante la siguiente fórmula:
 \begin{equation*}
 O = \frac{W-K+2P}{S}+1,
@@ -165,13 +169,16 @@ donde $W$ es el tamaño de entrada, $K$ el tamaño del filtro, $P$ el padding y $S
 	Como se puede ver en la fórmula, el parámetro stride influye en la dimensión de salida, cosa que utilizaremos extensivamente en las GANs.
 \end{obs}
 
-Después de la capa de convolución se suele realizar una reducción de muestreo (\textbf{Pooling} en inglés), con el objetivo de reducir la dimensión de los mapas de características y abstraer su contenido para conseguir que la red generalice mejor. Pensemos por ejemplo en un mapa de características que identifica líneas horizontales. No necesitamos saber exactamente dónde tenemos una línea horizontal, nos basta con saber que hay una en el centro de la imagen. La capa de pooling toma cada uno de los mapas de características obtenidos y lo divide en regiones. A los elementos de cada región les aplica una operación para comprimir la información que contienen. Las operaciones más utilizadas son el máximo, la media o el mínimo. En la Figura \ref{pool} observamos de manera esquemática un mapa de características $4 \times 4$ que se ha dividido en $4$ regiones $2 \times 2$, a las que se aplica la función máximo.
+Después de la capa de convolución se suele realizar una reducción de muestreo (\textbf{Pooling} en inglés), con el objetivo de reducir la dimensión de los mapas de características y abstraer su contenido para conseguir que la red generalice mejor. Pensemos por ejemplo en un mapa de características que identifica líneas horizontales. No necesitamos saber exactamente dónde tenemos una línea horizontal, nos basta con saber que hay una en el centro de la imagen. La capa de pooling toma cada uno de los mapas de características obtenidos y lo divide en regiones. A los elementos de cada región les aplica una operación para comprimir la información que contienen. Las operaciones más utilizadas son el máximo, la media o el mínimo. En la Figura \ref{pooling} observamos de manera esquemática un mapa de características $4 \times 4$ que se ha dividido en $4$ regiones $2 \times 2$, a las que se aplica la función máximo.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.4]{../images/report/maxpool.pdf}
 	\caption{Diagrama ilustrativo de reducción de muestreo mediante máximo.}
-	\label{pool}
+	\label{pooling}
 \end{figure}
+
+Antes de seguir adelante, es preciso introducir el concepto de \textbf{batch}, que, aunque aplica a todo tipo de redes neuronales, en nuestro caso tiene especial relevancia. El batch es un hiperparámetro que controla el número de muestras con el que es entrenada la red antes de proceder a una actualización de pesos. El tamaño del batch puede ir desde 1 hasta el número de muestras del conjunto de datos. Cuando se recorre todo el conjunto de datos se dice que ha pasado una \textbf{época}. Por ejemplo, en el caso en que el tamaño de batch sea $100$ y el conjunto de datos tenga $1000$ muestras, actualizaremos los pesos de la red cada $100$ muestras y diremos que hemos completado una época cuando lleguemos a $1000$.
 
 Recientemente se ha incorporado una técnica para mejorar la estabilidad en el entrenamiento de redes convolucionales, llamada \textbf{Batch Normalization} \cite{ioffe2015batch}. La idea fundamental es, si normalizamos los datos antes de introducirlos en la capa de entrada para reducir las influencias de las magnitudes de las variables y ajustarlos a una distribución, ¿por qué no hacer lo mismo en todas las capas?
 
@@ -195,7 +202,7 @@ Por este motivo es necesario definir otras funciones que sigan siendo no lineale
 	\begin{equation*}
 	f(x) = \max(0,x)
 	\end{equation*}
-	De manera similar, se define la función LeakyReLU:
+	De manera similar, se define la función \textbf{LeakyReLU}:
 	\begin{equation*}
 	f(x) =
 	\begin{cases}
@@ -205,27 +212,30 @@ Por este motivo es necesario definir otras funciones que sigan siendo no lineale
 	\end{equation*}
 \end{defn}
 
-Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar por ejemplo un perceptrón multicapa. En la Figura \ref{red} se puede observar una arquitectura de red convolucional como la que hemos descrito.
+Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar por ejemplo un perceptrón multicapa. En la Figura \ref{cnn:diagram} se puede observar una arquitectura de red convolucional como la que hemos descrito.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.4]{../images/report/red.pdf}
 	\caption{Arquitectura básica de una red convolucional}
-	\label{red}
+	\label{cnn:diagram}
 \end{figure}
 
 \chapter{Redes generativas antagónicas}
 En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
+
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
-La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura \ref{esquema}.
+La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura \ref{gan:concept}.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.8]{../images/report/scheme.png}
-	\label{esquema}
+	\label{gan:concept}
 	\caption{Diagrama conceptual de las redes generativas antagónicas.}
 \end{figure}
+
 Podemos traducir esta idea a términos matemáticos de la siguiente manera:
 
 Para aprender la distribución $p_g$ del generador sobre los datos $x$, definimos una distribución sobre las variables de ruido de entrada $p_z(z)$. Mediante un perceptrón multicapa con parámetros $\theta_g$ definimos la función $G(z;\theta_g)$. Definimos también mediante otro perceptrón multicapa $D(x; \theta_d)$ la probabilidad de que $x$ es una muestra de los datos y no del generador. Entrenamos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados. Al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax:
@@ -234,6 +244,7 @@ Para aprender la distribución $p_g$ del generador sobre los datos $x$, definimos
 \end{equation}
 
 En el Algoritmo \ref{alg:gan} describimos lo anterior de manera más concisa y damos una primera idea de cómo se lleva a cabo el entrenamiento.
+
 \begin{algorithm}[h]
 	\For{Iteraciones de entrenamiento}
 	{
@@ -252,10 +263,9 @@ En el Algoritmo \ref{alg:gan} describimos lo anterior de manera más concisa y da
 	\caption{Entrenamiento de una red generativa antagónica genérica.}
 	\label{alg:gan}
 \end{algorithm}
+
 \section{Bases teóricas}
-
 En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas. Mostraremos que el criterio de entrenamiento nos permite recuperar la distribución de los datos si damos a $G$ y $D$ capacidad suficiente. 
-
 \begin{teorema}
 	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
 	\begin{equation}
@@ -274,54 +284,90 @@ En esta sección realizaremos un análisis de la teoría que hay detrás de las rede
 
 \section{Otros modelos generativos}
 Variational autoencoders, noise contrastive estimation etc.
-\chapter{Generación de arte}
-En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch} una red convolucional profunda generativa antagónica, con la cual vamos a tratar de generar imágenes de cuadros realistas.
-\section{DCGAN}
-Las redes convolucionales profundas generativas antagónicas (deep convolutional generative adversarial networks, DCGAN) son una extensión de las GANs tradicionales, que implementan una serie de recomendaciones para incrementar la estabilidad y obtener imágenes de mejor calidad. Los puntos más relevantes que se pueden extraer de \cite{radford2015unsupervised} son:
-\begin{itemize}
-	\item En el discriminador, utilizar convoluciones con stride en lugar de capas de pooling.
-	\item En el generador, utilizar convoluciones fraccionales con stride en lugar de capas de pooling.
-	\item Utilizar BatchNorm tanto para generador como discriminador.
-	\item No utilizar capas fully connected.
-	\item Utilizar funciones de activación ReLU en el generador, salvo para la última capa, en la que se propone usar $\tanh$.
-	\item Utilizar funciones de activación LeakyReLU en el discriminador.
-	\item Inicializar los pesos de ambas redes con una distribución normal.
-\end{itemize}
-RECORDAR QUE STRIDE Y POOL SON PARECIDOS Y DESCRIBIR LEAKYRELU.
 
-El objetivo que nos hemos propuesto es la generación de cuadros realistas, para ello, es necesario un amplio conjunto de datos con cuadros de distintos artístas, épocas y estilos. Hemos encontrado en  una competición de Kaggle un conjunto de datos con las características deseadas, con más de 100000 imágenes, ocupando aproximadamente 49 GB. Una muestra de dichas imágenes se puede observar en la Figura \ref{img_reales}
+\chapter{Generación de arte}
+En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Networks en inglés), con la cual vamos a generar imágenes de cuadros realistas.
+
+\section{DCGAN}
+Las redes convolucionales generativas antagónicas profundas son una extensión de las GANs tradicionales. Una de sus características principales es el uso de redes convolucionales con arquitecturas relativamente sencillas para el discriminador y redes con convoluciones fraccionales para el generador.
+\begin{defn}
+	Una convolución fraccional (también llamada deconvolución o convolución traspuesta en algunos textos) es.
+\end{defn}
+Además, en el artículo \cite{radford2015unsupervised} los autores proporcionan una serie de recomendaciones empíricas para incrementar la estabilidad y obtener imágenes de mayor calidad. Los puntos más relevantes que se pueden extraer del artículo son:
+
+\begin{itemize}
+	\item En el discriminador, utilizar convoluciones con stride en lugar de convoluciones con pooling.
+	\item En el generador, utilizar convoluciones fraccionales con stride en lugar de convoluciones con pooling.
+	\item No utilizar capas totalmente conectadas.
+	\item Utilizar funciones de activación ReLU en todas las capas del generador salvo en la última, en la que utilizar $\tanh$.
+	\item Utilizar funciones de activación LeakyReLU en todas las capas del discriminador.
+	\item Utilizar batch normalization tanto para el generador como el discriminador.
+	\item Inicializar los pesos de ambas redes según una distribución normal.
+\end{itemize}
+
+El objetivo del trabajo es la generación de cuadros realistas, para ello, es necesario una base de datos de gran tamaño con cuadros de distintos artistas, épocas y estilos. En  una competición de Kaggle\footnote{\url{https://www.kaggle.com/c/painter-by-numbers/data}.} hemos encontrado un conjunto de datos con más de $100000$ imágenes, ocupando aproximadamente 49 GB en disco. Una muestra de dichas imágenes se puede observar en la Figura \ref{img:not_preprocessed}
+
 \begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.60]{../images/results/original_data.png}
-	\label{img_reales}
-	\caption{Imágenes del conjunto de datos.}
+	\begin{subfigure}{.3\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/muestra1.jpg}
+		\caption{}
+		\label{fig:sfig1}
+	\end{subfigure}%
+	\begin{subfigure}{.3\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/muestra2.jpg}
+		\caption{}
+		\label{fig:sfig2}
+	\end{subfigure}
+	\begin{subfigure}{.3\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/muestra3.jpg}
+		\caption{}
+		\label{fig:sfig3}
+	\end{subfigure}
+	\caption{Imágenes del conjunto de datos original sin preprocesar.}
+	\label{img:not_preprocessed}
 \end{figure}
 
 \subsection{Preprocesado}
-El conjunto de datos tenía algunos defectos, como por ejemplo imágenes descargadas incorrectamente o imágenes corruptas en el propio conjunto de datos. Se ha tomado la decisión de eliminar dichas imágenes. ya que son pocas y no hay una manera directa de recuperarlas.
+Como paso previo a la definición de la arquitectura de las redes y su posterior entrenamiento, ha sido necesario procesar las imágenes, paso que nos ha servido también para formarnos una idea de cómo es el conjunto de datos.
+ 
+En un principio teníamos imágenes etiquetadas con el nombre del autor y estilo de cada cuadro. Dado que dicha información no es relevante para nuestro propósito, la hemos descartado (se podría haber aprovechado, pero excede el alcance de este trabajo). Por otro lado, teníamos las imágenes divididas en conjuntos de entrenamiento y test, que hemos unificado, ya que nuestro problema pertenece al ámbito del aprendizaje no supervisado. Finalmente nos hemos encontrado con imágenes corruptas que hemos tenido que eliminar, por ejemplo, imágenes descargadas incorrectamente, de tamaños excesivamente grandes o en formatos incorrectos.
 
-Una vez limpio el conjunto de datos, es necesario realizar algunas transformaciones para que, posteriormente, nuestras redes neuronales puedan utilizar las imágenes. En primer lugar hemos homogeneizado los tamaños y las proporciones. Pasamos así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, realizamos un recorte centrado y finalmente las cargamos como tensores.
+Una vez limpio el conjunto de datos, hemos realizado algunas transformaciones para que, posteriormente, nuestras redes reciban elementos de entrada uniformes. En primer lugar hemos escalado los tamaños y las proporciones, pasando así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, realizamos un recorte centrado y finalmente las cargamos como tensores, que es el formato utilizado por \texttt{PyTorch}. En la Figura \ref{img:preprocessed} se puede observar una muestra de las imágenes preprocesadas.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.60]{../images/results/original_data.png}
+	\label{img:preprocessed}
+	\caption{Imágenes del conjunto de datos original con el preprocesado realizado.}
+\end{figure}
 
 \subsection{Arquitectura}
-Siguiendo las recomendaciones del artículo \cite{radford2015unsupervised}, hemos decidido utilizar la arquitectura que se muestra en la Figura \ref{esqma}. También hemos inicializado los pesos con una distribución normal $\mathcal{N}()$ y hemos seleccionado un tamaño de batch de 128.
+Basándonos en las recomendaciones mencionadas anteriormente, hemos decidido utilizar la arquitectura que mostramos en la Figura \ref{architecture}, con una red convolucional sencilla para el discriminador y una red de convoluciones fraccionales para el generador, para consultar los detalles a más bajo nivel, recomendamos visitar la página correspondiente al código en el repositorio creado para este trabajo\footnote{\url{https://github.com/ant-mak/tfm/blob/master/src/tfm_teci_antonmakarov_gan-paintings.ipynb.}}.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
-	\label{esqma}
+	\label{architecture}
 	\caption{Arquitectura de las redes (Cambiar, poner tamaños de entrada y salida).}
 \end{figure}
-La red se ha entrenado durante 30 épocas, utilizando el algoritmo de optimización Adam \cite{kingma2014adam} con una tasa de aprendizaje de $0.0002$ y $\beta = (0.5,0.999)$.
+
+Hemos inicializado los pesos de ambas redes según una distribución normal $\mathcal{N}(0, 0.0002)$ y seleccionado un tamaño de batch de 128. El algoritmo de optimización por el que hemos optado es Adam \cite{kingma2014adam}, seleccionando una tasa de aprendizaje de $0.0002$ y $\beta = (0.5, 0.999)$. Dado que el entrenamiento es muy costoso, hemos considerado prudente entrenar durante 30 épocas como máximo, guardando no obstante los modelos en cada época para después poder volver a ellos y realizar comparaciones en la calidad de las imágenes generadas. Para poder hacer las comparaciones algo más fiables, hemos fijado un vector de ruido aleatorio al principio y generado una muestra a partir de él cada 200 batches y al final de cada época, obteniendo de este modo una visualización de la evolución del entrenamiento\footnote{Una animación de la evolución de la muestra desde ruido aleatorio hasta imágenes realistas se puede ver en el repositorio.}.
+
 \subsection{Recursos}
-Cabe destacar que ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA, en concreto se ha utilizado una Nvidia Quadro P5000. El entrenamiento de principio a fin ha tardado aproximadamente 24 horas. También se han realizado pruebas con CPU en un portátil de prestaciones modestas y se ha observado que el rendimiento era unas 20 veces menor.
+Como hemos ido comentando a lo largo de todo el trabajo, el entrenamiento de las GANs no es para nada sencillo, siendo necesaria una cuidadosa elección del conjunto de datos, de la arquitectura de la red y de los hiperparámetros. Sin embargo esto es tan solo una parte de la dificultad. También es necesario disponer de unas capacidades de cómputo generosas. Ha sido imprescindible el uso de un ordenador con GPU compatible con CUDA y una gran cantidad de memoria RAM. En concreto el equipo que hemos utilizado contaba con una GPU Nvidia Quadro P5000 y 32GB de RAM. Con esta configuración, las $30$ épocas de entrenamiento se prolongaron durante aproximadamente 24 horas. Para contrastar, también hemos realizado pruebas entrenando con CPU en un portátil de modestas prestaciones, observando un rendimiento aproximadamente 20 veces menor.
 \section{Resultados}
+En la Figura \ref{img:generated} mostramos medio batch de imágenes generadas con nuestra GAN a partir de un vector de entrada aleatorio, sin realizar ningún tipo de selección ni procesado. Observamos que, en general y a primera vista, algunas podrían hacerse pasar por obras de arte, incluso podríamos distinguir paisajes, retratos o composiciones abstractas. Sin embargo, tras una inspección más cuidadosa, es claro que las imágenes que no pueden ser catalogadas como abstractas carecen de detalles o presentan formas inusuales, bastante típicas en las imágenes generadas con GANs. Con todo, consideramos que las imagenes obtenidas son visualmente agradables.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{../images/results/generated_data.png}
-	\label{img_generadas}
-	\caption{Imágenes generadas mediante la DCGAN implementada después de 30 épocas de entrenamiento.}
+	\label{img:generated}
+	\caption{Imágenes generadas mediante la DCGAN implementada después de 30 épocas.}
 \end{figure}
-\chapter{Conclusión}
 
+\chapter{Conclusión}
 
 \bibliography{../bibliography/tfmbib}
 \bibliographystyle{abbrv}
