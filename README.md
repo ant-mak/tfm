@@ -10,9 +10,6 @@ Máster en Tratamiento Estadístico Computacional de la Información. Universida
 ## Algunos ejemplos de imágenes generadas
 ![gen_image](/images/results/generated_data.png?raw=true "generated_images")
 
-## Evolución a lo largo del entrenamiento de una muestra de ruido aleatorio fijada al principio
-![](/animations/animation_19_7_14_11.gif)
-
 ## Contenido
 Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio se incluye:
 - Memoria
