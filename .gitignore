@@ -106,6 +106,7 @@ venv.bak/
 # data directories
 models/
 data/
+animations/
 
 # LaTeX
 *.toc
