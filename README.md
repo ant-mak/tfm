@@ -7,8 +7,11 @@ Trabajo Fin de Máster.
 
 Máster en Tratamiento Estadístico Computacional de la Información. Universidad Complutense de Madrid y Universidad Politécnica de Madrid.
 
-## Imágenes de ejemplo
+## Algunos ejemplos de imágenes generadas
 ![gen_image](/images/results/generated_data.png?raw=true "generated_images")
+
+## Evolución a lo largo del entrenamiento de una muestra de ruido aleatorio fijada al principio
+![](name-of-giphy.gif)
 
 ## Contenido
 Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio se incluye:
