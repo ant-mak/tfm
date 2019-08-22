@@ -87,12 +87,11 @@
 \mbox{}\newpage
 
 \chapter{Introducción}
-Introducción\footnote{Todo el código de este trabajo se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.} \cite{goodfellow2014generative}, \cite{goodfellow2016nips}, \cite{radford2015unsupervised}, \cite{Goodfellow-et-al-2016}
-
+Introducción\footnote{Todo el código de este trabajo se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.}.
 \chapter{Preliminares}
 En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, prestando especial atención a las redes convolucionales.
 
-\section{Conceptos básicos}
+\section{Aprendizaje automático}
 El aprendizaje automático tiene como objetivo principal el desarrollo de técnicas que permitan aprender a las máquinas de manera autónoma, sin ser programadas explícitamente para ello, a partir de datos. Dentro del aprendizaje automático existen problemas de muy diversa índole; una manera de clasificarlos es la basada en el tipo de información disponible. En las siguientes secciones describiremos brevemente la clasificación más habitual.
 
 \subsection{Aprendizaje supervisado}
@@ -120,11 +119,38 @@ El aprendizaje por refuerzo busca determinar la mejor acción a realizar ante una
 \end{itemize}
 Los algoritmos más conocidos dentro de este área son el Q-learning, SARSA o DQN.
 
+\section{Conceptos básicos}
+Dedicaremos esta sección a la definición de algunos conceptos que serán de utilidad en capítulos posteriores.
+
+\begin{defn}
+	La divergencia de Kullback-Leibler es una medida de la diferencia entre dos distribuciones. Se define como:
+	\begin{equation}
+	D_{KL}(P||Q) = \int_{-\infty}^{\infty} p(x) \log \left(\frac{p(x)}{q(x)}\right).
+	\end{equation}
+\end{defn}
+
+\begin{defn}
+	La divergencia de Jensen-Shannon se define a partir de la de Kullback-Leibler como:
+	\begin{equation}
+	JSD(P||Q) = \frac{1}{2} D_{KL}(P||M) + \frac{1}{2} D_{KL}(Q||M),
+	\end{equation}
+	donde $M = \frac{P+Q}{2}$. Tiene la ventaja de ser simétrica y finita.
+\end{defn}
+
+\begin{defn}
+	Un equilibrio de Nash es un concepto de solución para juegos no cooperativos de dos o más jugadores en el que cada jugador conoce las estrategias de equilibrio de los demás. Si cada jugador elige una estrategia y ninguno de ellos tiene incentivos para cambiar la suya suponiendo que los demás no lo hacen, se dice que el conjunto de estrategias está en equilibrio.
+\end{defn}
+
+Finalmente, introducimos la \textbf{ley del inconsciente estadístico}, utilizada para calcular la esperanza de una función $f(X)$ de una variable aleatoria $X$ cuando se conoce la distribución de $X$ pero no la de $f(X)$:
+\begin{equation}
+\mathbb{E}_{x\sim p} [f(x)] = \int p(x)f(x)dx.
+\end{equation}
+
 \section{Redes neuronales}
 Las redes neuronales son una clase de algoritmos de aprendizaje automático inspiradas en el estudio biológico de las neuronas en el cerebro. Cabe destacar que pese a que, toman la idea de las neuronas biológicas, no pretenden modelizarlas ni replicar su funcionamiento. Están formadas por una gran cantidad de unidades de procesamiento (o neuronas) interconectadas entre sí. Las fuerzas (o pesos) de cada una de dichas conexiones se modifica en el proceso de entrenamiento con el objetivo de minimizar una cierta función de coste. La minimización se lleva a cabo mediante el algoritmo de descenso en la dirección del gradiente o alguna de sus variantes creadas específicamente para las redes neuronales (SGD, RMSprop, Adam, etc.). Para calcular el gradiente se utiliza el algoritmo de retropropagación, basado en la regla de la cadena. Existe una gran variedad de redes neuronales según el tipo de problema de aprendizaje que se quiera resolver con ellas, la caracterización de las neuronas y la estructura de conexiones de la red. Algunas de las más conocidas son el perceptrón multicapa, las redes convolucionales o las redes recurrentes.
 
 \section{Aprendizaje profundo}
-El aprendizaje profundo es un subgrupo de algoritmos de aprendizaje automático que buscan abstraer características de alto nivel presentes en los datos, utilizando generalmente arquitecturas basadas en redes neuronales con una gran cantidad de capas.
+El aprendizaje profundo es un subgrupo de algoritmos de aprendizaje automático que buscan abstraer características de alto nivel presentes en los datos, utilizando generalmente arquitecturas basadas en redes neuronales con una gran cantidad de capas. Para profundizar en las matemáticas detrás del aprendizaje profundo una excelente referencia es \cite{Goodfellow-et-al-2016}.
 
 En la actualidad son muy populares debido a su enorme potencial para resolver problemas complejos en ámbitos como la visión por computador o  el procesamiento del lenguaje natural, entre otros. Dicho potencial no ha podido ser aprovechado hasta hace muy poco debido a la escasez, por un lado, de conjuntos de datos adecuados y, por otro, de recursos computacionales, ya que estos métodos requieren unas capacidades de cálculo y dimensiones de conjuntos de datos muy superiores a otros métodos más tradicionales.
 
@@ -222,28 +248,26 @@ Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el obje
 \end{figure}
 
 \chapter{Redes generativas antagónicas}
-En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas, generative adversarial networks o GANs en inglés. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
+En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas (\textbf{GANs} o Generative Adversarial Networks en inglés). Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
 
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
-La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sepa discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista. Una representación esquemática se puede ver en la Figura \ref{gan:concept}.
+La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sea capaz de discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista.
+
+Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
+\begin{equation}
+\min_G \max_D V(D,G) = \mathbb{E}_{x \sim p_d(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1- D(G(z)))].
+\end{equation}
+
+En la Figura \ref{gan:concept} mostramos una representación esquemática del funcionamiento de las GANs y en el Algoritmo \ref{alg:gan} lo describimos de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.8]{../images/report/scheme.png}
+	\includegraphics[scale=1]{../images/report/scheme.pdf}
 	\label{gan:concept}
 	\caption{Diagrama conceptual de las redes generativas antagónicas.}
 \end{figure}
-
-Podemos traducir esta idea a términos matemáticos de la siguiente manera:
-
-Para aprender la distribución $p_g$ del generador sobre los datos $x$, definimos una distribución sobre las variables de ruido de entrada $p_z(z)$. Mediante un perceptrón multicapa con parámetros $\theta_g$ definimos la función $G(z;\theta_g)$. Definimos también mediante otro perceptrón multicapa $D(x; \theta_d)$ la probabilidad de que $x$ es una muestra de los datos y no del generador. Entrenamos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados. Al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax:
-\begin{equation}
-\min_G \max_D V(D,G) = \mathbb{E} [\log D(x)] + \mathbb{E} [\log (1- D(G(z)))].
-\end{equation}
-
-En el Algoritmo \ref{alg:gan} describimos lo anterior de manera más concisa y damos una primera idea de cómo se lleva a cabo el entrenamiento.
 
 \begin{algorithm}[h]
 	\For{Iteraciones de entrenamiento}
@@ -265,25 +289,70 @@ En el Algoritmo \ref{alg:gan} describimos lo anterior de manera más concisa y da
 \end{algorithm}
 
 \section{Bases teóricas}
-En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas. Mostraremos que el criterio de entrenamiento nos permite recuperar la distribución de los datos si damos a $G$ y $D$ capacidad suficiente. 
+En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas, utilizando como referencias principales \cite{goodfellow2014generative, goodfellow2016nips}. Mostraremos que el entrenamiento nos permite recuperar la distribución de los datos siempre y cuando $G$ y $D$ tengan capacidad suficiente. A lo largo de la sección supondremos que los modelos tienen capacidad infinita, estudiando la convergencia en el espacio de las funciones de densidad.
+
+\section{El juego minimax tiene óptimo global para $p_g = p_d$}
+Veamos en primer lugar cual es el discriminador óptimo para cualquier generador.
 \begin{teorema}
 	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
 	\begin{equation}
-	D_G^*(x) = \frac{p_{datos}(x)}{p_{datos}(x) + p_g(x)}
+	D_G^*(x) = \frac{p_{d}(x)}{p_{d}(x) + p_g(x)}
 	\end{equation}
 \end{teorema}
 \begin{proof}
 	El discriminador busca maximizar su función de utilidad, dada por $V(G,D)$
 	\begin{equation}
 	\begin{aligned}
-	V(G,D) &= \int_x p_{datos}(x) \log (D(x)) \mathrm{d}x + \int_z p_z(z) \log(1-D(g(z))) \mathrm{d}z\\
-	&= \int_x p_{datos}(x) \log (D(x)) + p_g(x) \log (1-D(x)) \mathrm{d}x
+	V(G,D) &= \int_x p_{d}(x) \log (D(x)) \mathrm{d}x + \int_z p_z(z) \log(1-D(g(z))) \mathrm{d}z\\
+	&= \int_x p_{d}(x) \log (D(x)) + p_g(x) \log (1-D(x)) \mathrm{d}x
 	\end{aligned}
 	\end{equation}
+Para todo par $(a,b) \in \mathbb{R}^2$ la función $f(y) = a\log(y) + b\log(1-y)$ alcanza el máximo en $\frac{a}{a+b}$ dentro del intervalo $[0,1]$, con lo que se obtiene el resultado.
 \end{proof}
 
-\section{Otros modelos generativos}
-Variational autoencoders, noise contrastive estimation etc.
+Podemos considerar que el objetivo de $D$ es maximizar la $\log$- verosimilitud para estimar $P(Y=y | x)$, donde $Y$ indica si la muestra es real $(y=1)$ o falsa $(y=0)$. De este modo, reescribimos el juego minimax como:
+\begin{equation}
+\begin{aligned}
+C(G) &= \max_D V(D,G)\\
+&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{z \sim p_z} [\log (1- D_G^*(G(z)))]\\
+&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{x \sim p_g} [\log (1- D_G^*(x))]\\
+&= \mathbb{E}_{x \sim p_d} \left[\log \left(\frac{p_d(x)}{p_d(x)+p_g(x)}\right)\right] + \mathbb{E}_{x \sim p_g} \left[\log \left(\frac{p_g(x)}{p_d(x)+p_g(x)}\right)\right].
+\end{aligned}
+\end{equation}
+
+\begin{teorema}
+	El mínimo global de $C(G)$ se alcanza si y solo si $p_g=p_d$, donde $C(G) = -\log 4$.
+\end{teorema}
+\begin{proof}
+	Para $p_g = p_d$ se tiene que $D_G^* = \frac{1}{2}$. Introduciendo este valor en la Ecuación tenemos que
+\begin{equation*}
+C(G) = \log \frac{1}{2} + \log \frac{1}{2} = -\log 4.
+\end{equation*}
+Veamos ahora que este es el mejor valor posible para $C(G)$ y que se alcanza solamente en el punto en que $p_g = p_d$:
+\begin{equation*}
+\mathbb{E}_{x \sim p_d} [-\log 2] + \mathbb{E}_{x \sim p_g} [-\log2] = -\log4.
+\end{equation*}
+Restando esto a $C(G)$ tenemos:
+\begin{equation}
+C(G) = -\log 4 + KL\left(p_d | \frac{p_d+p_g}{2}\right) + KL\left(p_g | \frac{p_d+p_g}{2}\right),
+\end{equation}
+donde $KL$ es la divergencia de Kullback-Leibler. Podemos escribir la ecuación anterior utilizando la divergencia de Jensen-Shannon:
+\begin{equation}
+C(G) = -\log 4 + 2JSD(p_d|p_g).
+\end{equation}
+Dado que $JSD$ es no negativa y vale cero en el caso de que sean iguales, tenemos que $-\log 4$ es el mínimo global de $C(G)$ y la única solución es $p_g = p_d$.
+\end{proof}
+\section{Convergencia del Algoritmo \ref{alg:gan}}
+\begin{teorema}
+	Si $G$ y $D$ tienen suficiente capacidad y, en cada paso del Algoritmo \ref{alg:gan} se permite al discriminador alcanzar su óptimo para el generador dado, actualizando $p_g$ con el objetivo de mejorar el criterio:
+	\begin{equation}
+	contenidos...
+	\end{equation}
+	entonces $p_g$ converge a $p_d$.
+\end{teorema}
+\begin{proof}
+	hola
+\end{proof}
 
 \chapter{Generación de arte}
 En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Networks en inglés), con la cual vamos a generar imágenes de cuadros realistas.
