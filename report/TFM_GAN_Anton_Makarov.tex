@@ -157,7 +157,7 @@ En la actualidad son muy populares debido a su enorme potencial para resolver pr
 \subsection{Redes neuronales convolucionales}
 Dado que nuestro objetivo es describir las redes generativas antagónicas y, más concretamente, utilizarlas para la generación de imágenes, es imprescindible introducir algunos de los conceptos más importantes de la familia de arquitecturas de aprendizaje profundo que están a la vanguardia en el campo de la visión por computador, las redes neuronales convolucionales (\textbf{CNNs} o Convolutional Neural Networks en inglés).
 
-Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el Neocognitrón \cite{fukushima1980neo} que, posteriormente, sería tomado por Yann LeCun, que describió la mayoría de conceptos tal como los conocemos hoy en día.
+Debemos sus primeros desarrollos a Kunihiko Fukushima, que en 1980 introdujo el Neocognitrón \cite{fukushima1980neo} que, posteriormente, sería tomado por Yann LeCun \cite{lecun1998gradient}, que describió la mayoría de conceptos tal como los conocemos hoy en día.
 
 La particularidad de las CNNs es que introducen una visión local del espacio. Pensemos, por ejemplo, en una imagen de un perro. Parece razonable que intentemos identificar que efectivamente nos encontramos ante un perro y no un gato fijándonos en pequeñas partes de la imagen como ojos, hocico, patas, orejas, etc., en lugar de en todos los píxeles a la vez sin ningún tipo de relación espacial entre sí. Es destacable que este tipo de filtros ya se utilizaba antes de las redes convolucionales, detectando por ejemplo líneas horizontales o verticales y seleccionando regiones de interés manualmente. Sin embargo, las redes convolucionales van más allá, automatizando el proceso de extracción de características y aprendiendo durante el entrenamiento los filtros más idóneos para el problema.
 
@@ -253,11 +253,12 @@ En este capítulo describiremos las ideas principales, tanto teóricas como prácti
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
-La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_g(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sea capaz de discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista.
+La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a obtener imágenes a partir de ruido aleatorio con distribución $p_z(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sea capaz de discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista.
 
 Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
 \begin{equation}
 \min_G \max_D V(D,G) = \mathbb{E}_{x \sim p_d(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1- D(G(z)))].
+\label{minimax}
 \end{equation}
 
 En la Figura \ref{gan:concept} mostramos una representación esquemática del funcionamiento de las GANs y en el Algoritmo \ref{alg:gan} lo describimos de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
@@ -289,70 +290,107 @@ En la Figura \ref{gan:concept} mostramos una representación esquemática del func
 \end{algorithm}
 
 \section{Bases teóricas}
-En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas, utilizando como referencias principales \cite{goodfellow2014generative, goodfellow2016nips}. Mostraremos que el entrenamiento nos permite recuperar la distribución de los datos siempre y cuando $G$ y $D$ tengan capacidad suficiente. A lo largo de la sección supondremos que los modelos tienen capacidad infinita, estudiando la convergencia en el espacio de las funciones de densidad.
+En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas, utilizando como referencias principales \cite{goodfellow2014generative, goodfellow2016nips}. En primer lugar veremos cuales son el generador y discriminador óptimos, mostrarando después que el Algoritmo \ref{alg:gan} logra que $p_g$ converja a $p_d$.
 
-\section{El juego minimax tiene óptimo global para $p_g = p_d$}
-Veamos en primer lugar cual es el discriminador óptimo para cualquier generador.
+\subsection{Óptimo global}
+Veamos en primer lugar cual es el discriminador óptimo para un generador dado.
 \begin{teorema}
 	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
 	\begin{equation}
-	D_G^*(x) = \frac{p_{d}(x)}{p_{d}(x) + p_g(x)}
+	D_G^*(x) = \frac{p_{d}(x)}{p_{d}(x) + p_g(x)}.
+	\label{opt:D}
 	\end{equation}
 \end{teorema}
 \begin{proof}
-	El discriminador busca maximizar su función de utilidad, dada por $V(G,D)$
+	El discriminador busca maximizar la Ecuación (\ref{minimax}), que podemos reescribir, utilizando la ley del inconsciente estadístico como:
 	\begin{equation}
 	\begin{aligned}
 	V(G,D) &= \int_x p_{d}(x) \log (D(x)) \mathrm{d}x + \int_z p_z(z) \log(1-D(g(z))) \mathrm{d}z\\
 	&= \int_x p_{d}(x) \log (D(x)) + p_g(x) \log (1-D(x)) \mathrm{d}x
 	\end{aligned}
 	\end{equation}
-Para todo par $(a,b) \in \mathbb{R}^2$ la función $f(y) = a\log(y) + b\log(1-y)$ alcanza el máximo en $\frac{a}{a+b}$ dentro del intervalo $[0,1]$, con lo que se obtiene el resultado.
+Maximizando el integrando obtendremos el discriminador óptimo. Para ello, reescribimos el integrando como:
+\begin{equation*}
+f(y) = a \log y + b \log(1-y),
+\end{equation*}
+derivamos e igualamos a cero:
+\begin{equation*}
+f'(y) = 0 \implies \frac{a}{y} - \frac{b}{1-y} = 0 \implies y = \frac{a}{a+b}.
+\end{equation*}
+Suponiendo que $a+b \neq 0$, hacemos la segunda derivada en $\frac{a}{a+b}$, obteniendo:
+\begin{equation*}
+f''\left(\frac{a}{a+b}\right) = -\frac{a}{\left(\frac{a}{a+b}\right)^2} - \frac{b}{\left(1 - \frac{a}{a+b}\right)^2},
+\end{equation*}
+que es menor que cero para $(a.b) \in (0,1)$. Tomando por tanto $D = \frac{p_d}{p_d+p_g}$ tenemos el resultado, que además es único, ya que $f$ tiene un solo máximo en el intervalo.
 \end{proof}
+Es importante considerar que en la práctica, al desconocer $p_d(x)$, no podemos obtener el $D$ óptimo, pero su existencia nos permitirá demostrar ahora que existe un óptimo para $G$.
 
-Podemos considerar que el objetivo de $D$ es maximizar la $\log$- verosimilitud para estimar $P(Y=y | x)$, donde $Y$ indica si la muestra es real $(y=1)$ o falsa $(y=0)$. De este modo, reescribimos el juego minimax como:
-\begin{equation}
-\begin{aligned}
-C(G) &= \max_D V(D,G)\\
-&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{z \sim p_z} [\log (1- D_G^*(G(z)))]\\
-&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{x \sim p_g} [\log (1- D_G^*(x))]\\
-&= \mathbb{E}_{x \sim p_d} \left[\log \left(\frac{p_d(x)}{p_d(x)+p_g(x)}\right)\right] + \mathbb{E}_{x \sim p_g} \left[\log \left(\frac{p_g(x)}{p_d(x)+p_g(x)}\right)\right].
-\end{aligned}
-\end{equation}
+%Podemos considerar que el objetivo de $D$ es maximizar la $\log$-verosimilitud para estimar $P(Y=y | x)$, donde $Y$ indica si la muestra es real $(y=1)$ o falsa $(y=0)$. De este modo, reescribimos el juego minimax como:
+%\begin{equation}
+%\begin{aligned}
+%C(G) &= \max_D V(D,G)\\
+%&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{z \sim p_z} [\log (1- D_G^*(G(z)))]\\
+%&= \mathbb{E}_{x \sim p_d} [\log D_G^*(x)] + \mathbb{E}_{x \sim p_g} [\log (1- D_G^*(x))]\\
+%&= \mathbb{E}_{x \sim p_d} \left[\log \left(\frac{p_d(x)}{p_d(x)+p_g(x)}\right)\right] + \mathbb{E}_{x \sim p_g} \left[\log \left(\frac{p_g(x)}{p_d(x)+p_g(x)}\right)\right].
+%\end{aligned}
+%\end{equation}
 
 \begin{teorema}
-	El mínimo global de $C(G)$ se alcanza si y solo si $p_g=p_d$, donde $C(G) = -\log 4$.
+	El mínimo global de $C(G) = \max_D V(G,D)$ se alcanza si y solo si $p_g=p_d$.
+	\label{glob:min}
 \end{teorema}
 \begin{proof}
-	Para $p_g = p_d$ se tiene que $D_G^* = \frac{1}{2}$. Introduciendo este valor en la Ecuación tenemos que
+	Para $p_g = p_d$, sustituyendo en la Ecuación (\ref{opt:D}), obtenemos que $D_G^* = \frac{1}{2}$. Podemos por tanto escribir:
 \begin{equation*}
-C(G) = \log \frac{1}{2} + \log \frac{1}{2} = -\log 4.
+\begin{aligned}
+V(G,D_G^*) &= \int_x p_d(x) \log\frac{1}{2} + p_g(x)\log\left(1-\frac{1}{2}\right) dx \\
+&= \int_x \log \frac{1}{2} (p_d+p_g) dx \\
+& = -\log 2 \left(\int_x p_d + \int_x p_g\right) \\
+& = -2\log 2 = -\log 4. 
+\end{aligned}
 \end{equation*}
-Veamos ahora que este es el mejor valor posible para $C(G)$ y que se alcanza solamente en el punto en que $p_g = p_d$:
+Así, nuestro valor candidato para ser el mínimo global es $-\log 4$. Veamos qué pasa si descartamos la hipótesis de que $p_g = p_d$. Para todo $G$, podemos sustituir $D_G^*$ en $C(G)$:
+\begin{equation}
+C(G) = \int_x p_d(x) \log\left(\frac{p_d(x)}{p_g(x) + p_d(x)}\right) + p_g(x) \log \left( \frac{p_g(x)}{p_g(x)+p_d(x)}\right) dx.
+\label{eq:cg}
+\end{equation}
+El segundo sumando de la integral proviene de:
 \begin{equation*}
-\mathbb{E}_{x \sim p_d} [-\log 2] + \mathbb{E}_{x \sim p_g} [-\log2] = -\log4.
+1 - D_G^*(x) = 1 - \frac{p_d}{p_g+p_d} = \frac{p_g+p_d}{p_g+p_d}-\frac{p_d}{p_g+p_d} = \frac{p_g}{p_g+p_d}.
 \end{equation*}
-Restando esto a $C(G)$ tenemos:
-\begin{equation}
-C(G) = -\log 4 + KL\left(p_d | \frac{p_d+p_g}{2}\right) + KL\left(p_g | \frac{p_d+p_g}{2}\right),
-\end{equation}
-donde $KL$ es la divergencia de Kullback-Leibler. Podemos escribir la ecuación anterior utilizando la divergencia de Jensen-Shannon:
-\begin{equation}
-C(G) = -\log 4 + 2JSD(p_d|p_g).
-\end{equation}
-Dado que $JSD$ es no negativa y vale cero en el caso de que sean iguales, tenemos que $-\log 4$ es el mínimo global de $C(G)$ y la única solución es $p_g = p_d$.
+Sumando y restando $p_d (x)\log 2$ a ambos sumandos de (\ref{eq:cg}) se tiene que:
+
+%Veamos ahora que este es el mejor valor posible para $C(G)$ y que se alcanza solamente en el punto en que $p_g = p_d$:
+%\begin{equation*}
+%\mathbb{E}_{x \sim p_d} [-\log 2] + \mathbb{E}_{x \sim p_g} [-\log2] = -\log4.
+%\end{equation*}
+%Restando esto a $C(G)$ tenemos:
+%\begin{equation}
+%C(G) = -\log 4 + KL\left(p_d | \frac{p_d+p_g}{2}\right) + KL\left(p_g | \frac{p_d+p_g}{2}\right),
+%\end{equation}
+%donde $KL$ es la divergencia de Kullback-Leibler. Podemos escribir la ecuación anterior utilizando la divergencia de Jensen-Shannon:
+%\begin{equation}
+%C(G) = -\log 4 + 2JSD(p_d|p_g).
+%\end{equation}
+%Dado que $JSD$ es no negativa y vale cero en el caso de que sean iguales, tenemos que $-\log 4$ es el mínimo global de $C(G)$ y la única solución es $p_g = p_d$.
 \end{proof}
-\section{Convergencia del Algoritmo \ref{alg:gan}}
+\subsection{Convergencia}
 \begin{teorema}
-	Si $G$ y $D$ tienen suficiente capacidad y, en cada paso del Algoritmo \ref{alg:gan} se permite al discriminador alcanzar su óptimo para el generador dado, actualizando $p_g$ con el objetivo de mejorar el criterio:
+	Si $G$ y $D$ tienen suficiente capacidad y en cada paso del Algoritmo \ref{alg:gan} se permite al discriminador alcanzar su óptimo para dado el generador $G$, actualizando $p_g$ tal que se mejore el criterio:
 	\begin{equation}
-	contenidos...
+	\mathbb{E}_{x\sim p_d}[\log(D_G^*(x))] + \mathbb{E}_{x\sim p_g}[\log(1-D_G^*(x))],
 	\end{equation}
 	entonces $p_g$ converge a $p_d$.
 \end{teorema}
 \begin{proof}
-	hola
+	Sea $V(G,D) = U(p_g, D)$, dependiente de $p_g$, con $U(p_g, D)$ convexa. Las subderivadas del supremo de una función convexa incluyen la derivada de la función donde se alcanza el máximo. Es decir, si $f(x) = \sup_{a\in \mathcal{A}} f_{\alpha}(x)$ y $f_{\alpha}(x)$ es convexa para todo $\alpha$, entonces:
+	\begin{equation}
+		\partial f_{\beta}(x) \in \partial f,
+	\end{equation}
+	si $\beta = \arg \sup_{\alpha \in \mathcal{A}} f_{\alpha}(x)$. Esto es equivalente a actualizar $p_g$ según el descenso en la dirección del gradiente para el discriminador óptimo dado el generador $G$. Como hemos visto en el Teorema \ref{glob:min} $\sup U(p_g, D)$ es convexo en $p_g$ y con óptimo global único, por tanto, con actualizaciones lo suficientemente pequeñas de $p_g$, obtendremos la convergencia deseada.
 \end{proof}
+
+Cabe destacar que estos resultados teóricos en general no son aplicables a la práctica dado que la función $G(z, \theta_g)$ no representa, en general, a culaquier $p_g$ y la optimización se realiza respecto de $\theta_g$ en lugar de $p_g$. Aun así, empíricamente se observa que los resultados son excelentes.
 
 \chapter{Generación de arte}
 En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Networks en inglés), con la cual vamos a generar imágenes de cuadros realistas.
