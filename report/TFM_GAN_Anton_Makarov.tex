@@ -88,7 +88,37 @@
 \mbox{}\newpage
 
 \chapter{Introducción}
-Introducción\footnote{Todo el código de este trabajo se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.}.
+El aprendizaje automático es uno de los temas que más interés está suscitando en los últimos años, tanto por parte de la comunidad investigadora como por la industria. Podemos justificar esta tendencia mediante la disponibilidad de recursos computacionales con costes ajustados, permitiendo la utilización en la práctica de algunos algoritmos antiguos de manera eficaz y promoviendo la creación de otros nuevos. También podemos asociar este éxito a la creciente disponibilidad de datos, que cada vez son recogidos por más empresas y organismos públicos de manera electrónica, haciendo más sencillo su manejo.
+
+En este trabajo vamos a centrar nuestro estudio en las Redes Generativas Antagónicas (\textbf{GANs} o Generative Adversarial Networks en inglés), un tipo de modelo generativo que está recibiendo mucha atención en la actualidad debido a lo innovador de su idea y a la cantidad de aplicaciones que posee. Los modelos generativos tienen como objetivo describir la distribución subyacente de los conjuntos de datos con los que trabajan, por ejemplo podrían aproximar la distribución de las obras de arte para luego tomar muestras y crear cuadros totalmente nuevos. Las GANs fueron propuestas por Ian Goodfellow \cite{goodfellow2014generative} en 2014, introduciendo, como principal novedad, el concepto de equilibrio de teoría de juegos. Las GANs se fundamentan en encontrar un equilibrio en un juego en el que dos redes neuronales compiten entre sí, una generando imágenes a partir de ruido aleatorio y la otra decidiendo si son reales o falsas, en un entrenamiento en bucle.
+
+La acogida de esta idea ha sido espectacular, llevando a la publicación de numerosos artículos con extensiones, mejoras y modificaciones, obteniendo resultados impresionantes. Entre dichos artículos consideramos que merecen una mención especial \emph{DCGAN} \cite{radford2015unsupervised}, que introduce una gran cantidad de mejoras al artículo de Goodfellow y describe el espacio latente de las GANs (Figura \ref{DCGAN}), Progressive Growing of GANs \cite{karras2017progressive}, que permite generar imágenes de alta resolución mediante el entrenamiento progresivo de las redes (Figura \ref{PROGAN}), \emph{Cycle-GAN} \cite{zhu2017unpaired}, que permite la traducción de imágenes según estilo, conservando el contexto (Figura \ref{fig:sfig1}) y \emph{Wasserstein GAN} \cite{arjovsky2017wasserstein} que describe una variante de GAN con muy buenas propiedades matemáticas. 
+
+\begin{figure}[h]
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/dcgan.png}
+		\caption{DCGAN}
+		\label{DCGAN}
+	\end{subfigure}%
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/progan.png}
+		\caption{Progressive growing of GANs}
+		\label{PROGAN}
+	\end{subfigure}
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{../images/report/cyclegan.png}
+		\caption{Cycle-GAN}
+		\label{CYCLEGAN}
+	\end{subfigure}
+	\caption{Imágenes descriptivas de las técnicas.}
+	\label{GAN:papers}
+\end{figure}
+
+En el Capítulo 2 introduciremos los conceptos esenciales del aprendizaje automático, daremos algunas definiciones que serán de utilidad en capítulos posteriores y describiremos brevemente las redes neuronales, centrando la atención en las redes neuronales convolucionales. En el Capítulo 3 explicaremos en mayor detalle la idea conceptual de las redes generativas antagónicas y desarrollaremos la teoría matemática en la que se fundamentan. El Capítulo 4 está dedicado a la descripción de nuestra implementación en \texttt{Python} de una DCGAN para generar arte. Este capítulo va ligado al repositorio de código con el que acompañamos el proyecto\footnote{Todo el código de este proyecto se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde se incluyen las instrucciones para la reproducción de los resultados del proyecto.} y constituye una parte fundamental del trabajo realizado. Finalmente, en el Capítulo 5, presentamos las conclusiones y señalamos algunos temas y líneas de investigación que sería interesante perseguir en el futuro.
+
 \chapter{Preliminares}
 En este capítulo realizaremos un breve resumen de los conceptos fundamentales del aprendizaje automático, introduciremos las definiciones necesarias para el desarrollo del resto del trabajo y daremos unas nociones básicas sobre aprendizaje profundo, prestando especial atención a las redes convolucionales.
 
@@ -249,7 +279,7 @@ Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el obje
 \end{figure}
 
 \chapter{Redes generativas antagónicas}
-En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas (\textbf{GANs} o Generative Adversarial Networks en inglés). Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones en prácticamente todos los campos relacionados con el aprendizaje automático. 
+En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas. Fueron propuestas por primera vez por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, mezclando conceptos de aprendizaje automático no supervisado, supervisado y teoría de juegos. Desde entonces han suscitado una actividad investigadora muy importante, con aplicaciones fundamentalmente en el campo de la visión por computador.
 
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
