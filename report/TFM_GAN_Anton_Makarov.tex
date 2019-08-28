@@ -12,6 +12,11 @@
 \usepackage{amsthm}
 \usepackage[linesnumbered, ruled, spanish]{algorithm2e}	
 \usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true, %set true if you want colored links
+	linktoc=all,     %set to all if you want both sections and subsections linked
+}
 
 \newtheorem{defn}{Definición}[chapter]
 \newtheorem{teorema}{Teorema}[chapter]
@@ -92,28 +97,29 @@ El aprendizaje automático es uno de los temas que más interés está suscitando en
 
 En este trabajo vamos a centrar nuestro estudio en las Redes Generativas Antagónicas (\textbf{GANs} o Generative Adversarial Networks en inglés), un tipo de modelo generativo que está recibiendo mucha atención en la actualidad debido a lo innovador de su idea y a la cantidad de aplicaciones que posee. Los modelos generativos tienen como objetivo describir la distribución subyacente de los conjuntos de datos con los que trabajan, por ejemplo podrían aproximar la distribución de las obras de arte para luego tomar muestras y crear cuadros totalmente nuevos. Las GANs fueron propuestas por Ian Goodfellow \cite{goodfellow2014generative} en 2014, introduciendo, como principal novedad, el concepto de equilibrio de teoría de juegos. Las GANs se fundamentan en encontrar un equilibrio en un juego en el que dos redes neuronales compiten entre sí, una generando imágenes a partir de ruido aleatorio y la otra decidiendo si son reales o falsas, en un entrenamiento en bucle.
 
-La acogida de esta idea ha sido espectacular, llevando a la publicación de numerosos artículos con extensiones, mejoras y modificaciones, obteniendo resultados impresionantes. Entre dichos artículos consideramos que merecen una mención especial \emph{DCGAN} \cite{radford2015unsupervised}, que introduce una gran cantidad de mejoras al artículo de Goodfellow y describe el espacio latente de las GANs (Figura \ref{DCGAN}), Progressive Growing of GANs \cite{karras2017progressive}, que permite generar imágenes de alta resolución mediante el entrenamiento progresivo de las redes (Figura \ref{PROGAN}), \emph{Cycle-GAN} \cite{zhu2017unpaired}, que permite la traducción de imágenes según estilo, conservando el contexto (Figura \ref{fig:sfig1}) y \emph{Wasserstein GAN} \cite{arjovsky2017wasserstein} que describe una variante de GAN con muy buenas propiedades matemáticas. 
+La acogida de esta idea ha sido espectacular, llevando a la publicación de numerosos artículos con extensiones, mejoras y modificaciones, obteniendo resultados impresionantes. Entre dichos artículos consideramos que merecen una mención especial \emph{DCGAN} \cite{radford2015unsupervised}, que introduce una gran cantidad de mejoras al artículo de Goodfellow y describe el espacio latente de las GANs (Figura \ref{DCGAN}), \emph{Progressive Growing of GANs} \cite{karras2017progressive}, que permite generar imágenes de alta resolución mediante el entrenamiento progresivo de las redes (Figura \ref{PROGAN}), \emph{Cycle-GAN} \cite{zhu2017unpaired}, que permite la traducción de imágenes según estilo, conservando el contexto (Figura \ref{CYCLEGAN}) y \emph{Wasserstein GAN} \cite{arjovsky2017wasserstein} que describe una variante de GAN con muy buenas propiedades matemáticas. 
 
 \begin{figure}[h]
-	\begin{subfigure}{.33\textwidth}
+	\centering
+	\begin{subfigure}{.8\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{../images/report/dcgan.png}
 		\caption{DCGAN}
 		\label{DCGAN}
-	\end{subfigure}%
-	\begin{subfigure}{.33\textwidth}
+	\end{subfigure}
+	\begin{subfigure}{.8\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{../images/report/progan.png}
 		\caption{Progressive growing of GANs}
 		\label{PROGAN}
 	\end{subfigure}
-	\begin{subfigure}{.33\textwidth}
+	\begin{subfigure}{.8\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{../images/report/cyclegan.png}
 		\caption{Cycle-GAN}
 		\label{CYCLEGAN}
 	\end{subfigure}
-	\caption{Imágenes descriptivas de las técnicas.}
+	\caption{Imágenes descriptivas de algunas variantes de GANs.}
 	\label{GAN:papers}
 \end{figure}
 
@@ -292,14 +298,21 @@ Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC 
 \label{minimax}
 \end{equation}
 
-En la Figura \ref{gan:concept} mostramos una representación esquemática del funcionamiento de las GANs y en el Algoritmo \ref{alg:gan} lo describimos de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
+En la Figura \ref{ganconcept} mostramos una representación esquemática del funcionamiento de las GANs y en el Algoritmo \ref{alg:gan} lo describimos de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=1]{../images/report/scheme.pdf}
-	\label{gan:concept}
 	\caption{Diagrama conceptual de las redes generativas antagónicas.}
+	\label{ganconcept}
 \end{figure}
+
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=1]{../images/report/scheme.pdf}
+%	\label{gan_concept}
+%	\caption{Diagrama conceptual de las redes generativas antagónicas.}
+%\end{figure}
 
 \begin{algorithm}[h]
 	\For{Iteraciones de entrenamiento}
@@ -405,7 +418,7 @@ Simplificando términos obtenemos:
 -\log 4 + \int_x p_d(x)\log \left( \frac{p_d}{\frac{p_g+p_d}{2}}\right) \diff x + \int_x p_g(x)\log \left( \frac{p_g}{\frac{p_g+p_d}{2}}\right) \diff x.
 \label{pre:KL}
 \end{equation}
-Ahora podemos identificar la ecuación \ref{pre:KL} como la divergencia de Kullback-Leibler:
+Ahora podemos identificar la Ecuación (\ref{pre:KL}) como la divergencia de Kullback-Leibler:
 \begin{equation}
 C(G) = -\log 4 + D_{\mathrm{KL}}\left(p_d \Bigg \| \frac{p_d + p_g}{2}\right)+D_{\mathrm{KL}}\left(p_g \Bigg\| \frac{p_d + p_g}{2}\right).
 \end{equation}
@@ -454,7 +467,7 @@ Además, en el artículo \cite{radford2015unsupervised} los autores proporcionan u
 	\item Inicializar los pesos de ambas redes según una distribución normal.
 \end{itemize}
 
-El objetivo del trabajo es la generación de cuadros realistas, para ello, es necesario una base de datos de gran tamaño con cuadros de distintos artistas, épocas y estilos. En  una competición de Kaggle\footnote{\url{https://www.kaggle.com/c/painter-by-numbers/data}.} hemos encontrado un conjunto de datos con más de $100000$ imágenes, ocupando aproximadamente 49 GB en disco. Una muestra de dichas imágenes se puede observar en la Figura \ref{img:not_preprocessed}
+El objetivo del trabajo es la generación de cuadros realistas, para ello, es necesario una base de datos de gran tamaño con cuadros de distintos artistas, épocas y estilos. En  una competición de Kaggle\footnote{\url{https://www.kaggle.com/c/painter-by-numbers/data}.} hemos encontrado un conjunto de datos con más de $100000$ imágenes, ocupando aproximadamente 49 GB en disco. Una muestra de dichas imágenes se puede observar en la Figura \ref{img:not_preprocessed}.
 
 \begin{figure}[h]
 	\begin{subfigure}{.3\textwidth}
@@ -489,8 +502,8 @@ Una vez limpio el conjunto de datos, hemos realizado algunas transformaciones pa
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{../images/results/original_data.png}
-	\label{img:preprocessed}
 	\caption{Imágenes del conjunto de datos original con el preprocesado realizado.}
+	\label{img:preprocessed}
 \end{figure}
 
 \subsection{Arquitectura}
@@ -499,8 +512,8 @@ Basándonos en las recomendaciones mencionadas anteriormente, hemos decidido util
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
-	\label{architecture}
 	\caption{Arquitectura de las redes (Cambiar, poner tamaños de entrada y salida).}
+	\label{architecture}
 \end{figure}
 
 Hemos inicializado los pesos de ambas redes según una distribución normal $\mathcal{N}(0, 0.0002)$ y seleccionado un tamaño de batch de 128. El algoritmo de optimización por el que hemos optado es Adam \cite{kingma2014adam}, seleccionando una tasa de aprendizaje de $0.0002$ y $\beta = (0.5, 0.999)$. Dado que el entrenamiento es muy costoso, hemos considerado prudente entrenar durante 30 épocas como máximo, guardando no obstante los modelos en cada época para después poder volver a ellos y realizar comparaciones en la calidad de las imágenes generadas. Para poder hacer las comparaciones algo más fiables, hemos fijado un vector de ruido aleatorio al principio y generado una muestra a partir de él cada 200 batches y al final de cada época, obteniendo de este modo una visualización de la evolución del entrenamiento\footnote{Una animación de la evolución de la muestra desde ruido aleatorio hasta imágenes realistas se puede ver en el repositorio.}.
@@ -512,11 +525,18 @@ En la Figura \ref{img:generated} mostramos medio batch de imágenes generadas con
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{../images/results/generated_data.png}
-	\label{img:generated}
 	\caption{Imágenes generadas mediante la DCGAN implementada después de 30 épocas.}
+	\label{img:generated}
 \end{figure}
 
 \chapter{Conclusión}
+Las redes generativas antagónicas son una herramienta de gran interés tanto desde el punto de vista teórico como práctico. Por un lado introducen una nueva manera de pensar en el mundo del aprendizaje automático, generando una cantidad de investigación casi sin precedentes. Por otro, los modelos generativos pueden ser muy útiles para la industria, pudiendo ser empleados en, por ejemplo, la separación de contexto y estilo en imágenes \cite{karras2019style}, el entrenamiento de algoritmos igualitarios \cite{zhang2018mitigating} o la generación de texto \cite{yu2017seqgan}.
+
+Nuestro objetivo con este trabajo ha sido la construcción de una primera aproximación al campo de las GANs, incluyendo una breve introducción del contexto del problema, el desarrollo de la idea conceptual, una reseña de la teoría involucrada y, por último, una implementación práctica, que ha sido fundamental para consolidar los conceptos más intrincados, aprender a trabajar con \texttt{PyTorch} y utilizar una GPU para el entrenamiento.
+
+Los resultados que hemos obtenido en este trabajo tienen aún mucho potencial de mejora y nos gustaría seguir trabajando en ello. Algunas de las opciones que barajamos son la inclusión de etiquetas sobre el estilo de los cuadros en el modelo, que ya tenemos en nuestro conjunto de datos pero no hemos utilizado. Con esto, esperamos poder generar imágenes restringidas al estilo que queramos, siguiendo una metodología similar a \cite{mirza2014conditional}. También sería interesante tratar de aumentar la resolución, ya que actualmente tenemos imágenes de $64\times64$. Para ello podríamos tratar de incorporar el entrenamiento progresivo descrito en \cite{karras2017progressive}. Por último, sería interesante seleccionar los hiperparámetros principales de los modelos de una manera más metódica, utilizando alguno de los métodos descritos en \cite{bergstra2011algorithms}.
+
+También nos gustaría investigar en mayor profundidad el artículo \cite{arjovsky2017wasserstein}, cuyo contenido matemático es excelente y \cite{bau2018gan}, que aporta gran cantidad de explicaciones conceptuales e intuitivas. Así mismo, queremos continuar con el estudio de técnicas y arquitecturas más avanzadas, por ejemplo \cite{karras2019style,yu2017seqgan}, que están a la vanguardia en el tema de transferencia de estilo y generación de texto respectivamente. Finalmente, no queremos dejar sin mencionar el campo de los ejemplos antagónicos \cite{goodfellow2014explaining}, un tema estrechamente relacionado con las GANs, que introduce el concepto de ataque a algoritmos de aprendizaje automático. Por ejemplo, se consigue que un algoritmo clasifique una imagen de un perro como taza de café añadiendo tan solo un poco de ruido imperceptible al ojo humano.
 
 \bibliography{../bibliography/tfmbib}
 \bibliographystyle{abbrv}
