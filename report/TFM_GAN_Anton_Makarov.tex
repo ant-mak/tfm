@@ -449,9 +449,9 @@ MODE COLLAPSE.
 En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Network en inglés), con la cual vamos a generar imágenes de cuadros realistas.
 
 \section{DCGAN}
-Las redes convolucionales generativas antagónicas profundas son una extensión de las GANs tradicionales. Una de sus características principales es el uso de redes convolucionales con arquitecturas relativamente sencillas para el discriminador y redes con convoluciones traspuestas para el generador. 
+Las DCGANs son una de las extensiones más exitosas de las GANs tradicionales. Una de sus características principales es el uso de redes convolucionales con arquitecturas relativamente sencillas para el discriminador y redes con convoluciones fraccionales para el generador. 
 
-Las convoluciones traspuestas, también llamadas convoluciones fraccionales en algunos textos, tienen como objetivo aumentar la dimensión de los tensores de entrada. Antes de detallar su funcionamiento, vemos una manera sencilla de alcanzar este objetivo. Podríamos simplemente duplicar cada fila y columna según un factor. En la Figura \ref{duplicate} mostramos un ejemplo de esta técnica.
+Una parte fundamental en el generador es obtener una imagen a partir de un vector de ruido aleatorio. Para ello, es necesario ir aumentando la dimensión progresivamente. Veamos pues, en primer lugar, una manera sencilla de alcanzar este objetivo. Podríamos simplemente duplicar las filas y columnas según un cierto factor. En la Figura \ref{duplicate} mostramos un ejemplo de esta técnica con factor $2$.
 
 \begin{figure}[h]
 	\centering
@@ -460,18 +460,17 @@ Las convoluciones traspuestas, también llamadas convoluciones fraccionales en al
 	\label{duplicate}
 \end{figure}
 
-Aunque existen otras maneras algo más sofisticadas de aumentar el tamaño de los tensores, como por ejemplo la interpolación bilineal o bicúbica, nosotros nos vamos a centrar en la convolución fraccional, que permite que los parámetros que llevan a cabo la transformación sean aprendidos por la red generadora.
+También podríamos conseguir aumentar el tamaño de entrada mediante técnicas algo más sofisticadas a la descrita anteriormente, como por ejemplo la interpolación bilineal o bicúbica. Dicho esto, la técnica que mejores resultados ha cosechado es la convolución fraccional, que permite que los parámetros que llevan a cabo las transformaciónes sean aprendidos por la propia red.
 
-La convolución transpuesta posee los mismos parámetros que la convolución común. Una representación esquemática de la idea se puede ver en la Figura \ref{trans:conv}
-
+Es importante no confundir las convoluciones fraccionales o traspuestas con las deconvoluciones, que tienen como objetivo recuperar la entrada de una convolución, es decir, invertir la operación de convolución. Una convolución fraccional tan solo busca recuperar las dimensiones originales. Para ello, realiza la convolución usual pero añadiendo ceros de manera ingeniosa. En la Figura \ref{frac:conv} describimos visualmente la manera de añadir dicho relleno de ceros. Es importante notar que la cuadrícula se mueve siempre como una convolución con stride $1$. Podemos observar que el stride $s$ de la convolución fraccional equivale a un stride de $\frac{1}{s}$ en la convolución usual y que un valor de padding de $0$ equivale a un padding de $\frac{K+1}{2}$.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\linewidth]{../images/report/transposed_conv.pdf}
-	\caption{Aumento del tamaño de una imagen mediante convolución traspuesta.}
-	\label{trans:conv}
+	\includegraphics[width=\linewidth]{../images/report/frac_conv.pdf}
+	\caption{Aumento del tamaño de una imagen mediante convolución fraccional.}
+	\label{frac:conv}
 \end{figure}
 
-En el artículo \cite{radford2015unsupervised} los autores proporcionan una serie de recomendaciones empíricas para incrementar la estabilidad y obtener imágenes de mayor calidad. Los puntos más relevantes que se pueden extraer son:
+Fijémonos ahora en el artículo \cite{radford2015unsupervised}, donde los autores proporcionan una serie de recomendaciones empíricas para incrementar la estabilidad y obtener imágenes de mayor calidad. Los puntos más relevantes que se pueden extraer son:
 
 \begin{itemize}
 	\item En el discriminador, utilizar convoluciones con stride en lugar de convoluciones con pooling.
@@ -483,7 +482,7 @@ En el artículo \cite{radford2015unsupervised} los autores proporcionan una serie
 	\item Inicializar los pesos de ambas redes según una distribución normal.
 \end{itemize}
 
-El objetivo del trabajo es la generación de cuadros realistas, para ello, es necesario una base de datos de gran tamaño con cuadros de distintos artistas, épocas y estilos. En  una competición de Kaggle\footnote{\url{https://www.kaggle.com/c/painter-by-numbers/data}.} hemos encontrado un conjunto de datos con más de $100000$ imágenes, ocupando aproximadamente 49 GB en disco. Una muestra de dichas imágenes se puede observar en la Figura \ref{img:not_preprocessed}.
+Nuestro objetivo es la generación de cuadros realistas y, para ello, nos hace falta una base de datos de gran tamaño con cuadros de distintos artistas, épocas y estilos. En  una competición de Kaggle\footnote{\url{https://www.kaggle.com/c/painter-by-numbers/data}.} hemos encontrado un conjunto de datos con más de $100000$ imágenes, ocupando aproximadamente 49 GB en disco. Una muestra de dichas imágenes se puede observar en la Figura \ref{img:not_preprocessed}.
 
 \begin{figure}[h]
 	\begin{subfigure}{.33\textwidth}
@@ -513,7 +512,7 @@ Como paso previo a la definición de la arquitectura de las redes y su posterior 
  
 En un principio teníamos imágenes etiquetadas con el nombre del autor y estilo de cada cuadro. Dado que dicha información no es relevante para nuestro propósito, la hemos descartado (se podría haber aprovechado, pero excede el alcance de este trabajo). Por otro lado, teníamos las imágenes divididas en conjuntos de entrenamiento y test, que hemos unificado, ya que nuestro problema pertenece al ámbito del aprendizaje no supervisado. Finalmente nos hemos encontrado con imágenes corruptas que hemos tenido que eliminar, por ejemplo, imágenes descargadas incorrectamente, de tamaños excesivamente grandes o en formatos incorrectos.
 
-Una vez limpio el conjunto de datos, hemos realizado algunas transformaciones para que, posteriormente, nuestras redes reciban elementos de entrada uniformes. En primer lugar hemos escalado los tamaños y las proporciones, pasando así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, realizamos un recorte centrado y finalmente las cargamos como tensores, que es el formato utilizado por \texttt{PyTorch}. En la Figura \ref{img:preprocessed} se puede observar una muestra de las imágenes preprocesadas.
+Una vez limpio el conjunto de datos, hemos realizado algunas transformaciones para que, posteriormente, nuestras redes reciban elementos de entrada uniformes. En primer lugar hemos escalado los tamaños y las proporciones, pasando así de cuadros de todos los tamaños y de distintas formas a cuadrados de $64\times 64$ píxeles. Posteriormente, realizamos un recorte centrado, normalizamos y finalmente las cargamos como tensores, que es el formato utilizado por \texttt{PyTorch}. En la Figura \ref{img:preprocessed} se puede observar una muestra de las imágenes preprocesadas.
 
 \begin{figure}[h]
 	\centering
