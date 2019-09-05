@@ -14,8 +14,8 @@
 \usepackage{url}
 \usepackage{hyperref}
 \hypersetup{
-	colorlinks=true, %set true if you want colored links
-	linktoc=all,     %set to all if you want both sections and subsections linked
+	colorlinks=true,
+	linktoc=all
 }
 
 \newtheorem{defn}{Definición}[chapter]
@@ -226,7 +226,7 @@ En general se puede calcular la dimensión de salida de una capa convolucional me
 \begin{equation*}
 O = \frac{W-K+2P}{S}+1,
 \end{equation*}
-donde $W$ es el tamaño de entrada, $K$ el tamaño del filtro, $P$ el padding y $S$ la longitud del paso. En nuestro ejemplo, por tanto, tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$. En general se suele utilizar más de un filtro en cada capa convolucional, obteniendo así también dimensiones de profundidad.
+donde $W$ es el ancho, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride. En nuestro ejemplo, por tanto, tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$. En general se suele utilizar más de un filtro en cada capa convolucional, obteniendo así también dimensiones de profundidad.
 
 \begin{obs}
 	Como se puede ver en la fórmula, el parámetro stride influye en la dimensión de salida, cosa que utilizaremos extensivamente en las GANs.
@@ -463,7 +463,12 @@ Una parte fundamental en el generador es obtener una imagen a partir de un vecto
 
 También podríamos conseguir aumentar el tamaño de entrada mediante técnicas algo más sofisticadas a la descrita anteriormente, como por ejemplo la interpolación bilineal o bicúbica. Dicho esto, la técnica que mejores resultados ha cosechado es la convolución fraccional, que permite que los parámetros que llevan a cabo las transformaciónes sean aprendidos por la propia red.
 
-Es importante no confundir las convoluciones fraccionales o traspuestas con las deconvoluciones, que tienen como objetivo recuperar la entrada de una convolución, es decir, invertir la operación de convolución. Una convolución fraccional tan solo busca recuperar las dimensiones originales. Para ello, realiza la convolución usual pero añadiendo ceros de manera ingeniosa. En la Figura \ref{frac:conv} describimos visualmente la manera de añadir dicho relleno de ceros. Es importante notar que la cuadrícula se mueve siempre como una convolución con stride $1$. Podemos observar que el stride $s$ de la convolución fraccional equivale a un stride de $\frac{1}{s}$ en la convolución usual y que un valor de padding de $0$ equivale a un padding de $\frac{K+1}{2}$.
+Es importante no confundir las convoluciones fraccionales o traspuestas con las deconvoluciones, que tienen como objetivo recuperar la entrada de una convolución, es decir, invertir la operación de convolución. Una convolución fraccional tan solo busca recuperar las dimensiones originales. Para ello, realiza la convolución usual pero añadiendo ceros de manera ingeniosa para representar el stride y el padding. En la Figura \ref{frac:conv} describimos visualmente la manera de añadir dicho relleno de ceros. Es importante notar que la cuadrícula se mueve siempre como una convolución con stride $1$. Del mismo modo que en la convolución usual, podemos calcular la dimensión de salida de una capa de convolución fraccional mediante la siguiente fórmula:
+\begin{equation*}
+O = S(W-1)+K-2P,
+\end{equation*}
+donde $W$ es el ancho, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../images/report/frac_conv.pdf}
@@ -527,8 +532,8 @@ Basándonos en las recomendaciones mencionadas anteriormente, hemos decidido util
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.6]{../images/report/architecture_scheme.png}
-	\caption{Arquitectura de las redes (Cambiar, poner tamaños de entrada y salida).}
+	\includegraphics[width=\textwidth]{../images/report/architecture.pdf}
+	\caption{Arquitectura de las redes.}
 	\label{architecture}
 \end{figure}
 
