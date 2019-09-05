@@ -74,11 +74,11 @@
 
 \begin{abstractpage}
 	\begin{abstractnew}{spanish}
-	Resumen
+		En este trabajo estudiamos en profundidad las Redes Generativas Antagónicas, un modelo generativo no supervisado que explora la idea de poner a competir entre sí a dos redes neuronales. Expandimos las demostraciones teóricas del artículo en las que fueron introducidas por primera vez \cite{goodfellow2014generative} y proponemos la utilización de una variante de este tipo de redes, llamada DCGAN \cite{radford2015unsupervised}, para la generación de imágenes de cuadros de arte, demostrando experimentalmente que es posible obtener imágenes visualmente atractivas mediante este método.
 	\end{abstractnew}
 	
 	\begin{abstractnew}{english}
-	Abstract
+		In this dissertation we study Generative Adversarial Networks, an unsupervised generative model that explores the idea of setting two neural networks to compete with each other. We expand the proofs from the paper where they were first introduced \cite{goodfellow2014generative} and propose the use of a variant of these kind of networks called DCGAN \cite{radford2015unsupervised} to generate images of art, proving experimentally that it is possible to obtain visually appealing images with this method.
 	\end{abstractnew}
 \end{abstractpage}
 
@@ -441,9 +441,9 @@ Una vez hemos probado que el óptimo global del juego minimax existe y es único, 
 	si $\beta = \arg \sup_{\alpha \in \mathcal{A}} f_{\alpha}(x)$. Esto es equivalente a actualizar $p_g$ según el descenso en la dirección del gradiente para el discriminador óptimo dado el generador $G$. Como hemos visto en el Teorema \ref{glob:min} $\sup U(p_g, D)$ es convexo en $p_g$ y con óptimo global único, por tanto, con actualizaciones lo suficientemente pequeñas de $p_g$, obtendremos la convergencia deseada.
 \end{proof}
 
-Finalmente, es importante resaltar que, aunque el juego minimax tiene estas excelentes propiedades teóricas, en la práctica es necesario hacer una ligera modificación. Al principio del entrenamiento, cuando $G$ aún tiene bajas prestaciones, $D$ rechaza sus muestras con mucha confianza, lo que provoca que $\log(1-D(G(z)))$ se sature con facilidad. Por ello, es frecuente entrenar $G$ para que maximice $\log D(G(z))$, que converge al mismo equilibrio pero permite entrenar con mayor estabilidad.
+Es importante resaltar que, aunque el juego minimax tiene estas excelentes propiedades teóricas, en la práctica es necesario hacer una ligera modificación. Al principio del entrenamiento, cuando $G$ aún tiene bajas prestaciones, $D$ rechaza sus muestras con mucha confianza, lo que provoca que $\log(1-D(G(z)))$ se sature con facilidad. Por ello, es frecuente entrenar $G$ para que maximice $\log D(G(z))$, que converge al mismo equilibrio pero permite entrenar con mayor estabilidad.
 
-MODE COLLAPSE.
+Finalmente, un problema común con el que nos encontramos al entrenar redes generativas antagónicas, es que es muy complicado comparar los resultados obtenidos. En general, no hay una manera infalible de comprobar que las imágenes generadas por una red son mejores que las generadas por otra. Se han propuesto varias medidas que tratan de cuantificar de manera objetiva la calidad de las muestras generadas, pero por el momento es un tema de investigación activo. Un buen artículo que inspecciona el estado del arte es \cite{NIPS2018_7350}.
 
 \chapter{Generación de arte}
 En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Network en inglés), con la cual vamos a generar imágenes de cuadros realistas.
@@ -522,7 +522,7 @@ Una vez limpio el conjunto de datos, hemos realizado algunas transformaciones pa
 \end{figure}
 
 \subsection{Arquitectura}
-Basándonos en las recomendaciones mencionadas anteriormente, hemos decidido utilizar la arquitectura que mostramos en la Figura \ref{architecture}, con una red convolucional sencilla para el discriminador y una red de convoluciones fraccionales para el generador, para consultar los detalles a más bajo nivel, recomendamos visitar la página correspondiente al código en el repositorio creado para este trabajo\footnote{\url{https://github.com/ant-mak/tfm/blob/master/src/tfm_teci_antonmakarov_gan-paintings.ipynb.}}.
+Basándonos en las recomendaciones mencionadas anteriormente, hemos decidido utilizar la arquitectura que mostramos en la Figura \ref{architecture}, con una red convolucional sencilla para el discriminador y una red de convoluciones fraccionales para el generador. Además de las recomendaciones mencionadas anteriormente, hemos utilizado una técnica conocida como suavizado de etiquetas por un lado (one sided label smoothing en inglés \cite{salimans2016improved}). Consiste en modificar el valor de la etiqueta correspondiente a las imégenes reales de $1$ a $0.9$ para reducir la confianza de la red discriminadora al hacer las predicciones, ganando así estabilidad. Para consultar los detalles a más bajo nivel, recomendamos visitar la página correspondiente al código en el repositorio creado para este trabajo\footnote{\url{https://github.com/ant-mak/tfm/blob/master/src/tfm_teci_antonmakarov_gan-paintings.ipynb.}}.
 
 \begin{figure}[h]
 	\centering
