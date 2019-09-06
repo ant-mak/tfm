@@ -169,16 +169,16 @@ Dedicaremos esta sección a la definición de algunos conceptos que serán de utili
 
 \begin{defn}
 	La divergencia de Kullback-Leibler es una medida de la diferencia entre dos distribuciones. Se define como:
-	\begin{equation}
+	\begin{equation*}
 	D_{\mathrm{KL}}(P\|Q) = \int_{-\infty}^{\infty} p(x) \log \left(\frac{p(x)}{q(x)}\right) \diff x.
-	\end{equation}
+	\end{equation*}
 \end{defn}
 
 \begin{defn}
 	La divergencia de Jensen-Shannon se define a partir de la de Kullback-Leibler como:
-	\begin{equation}
+	\begin{equation*}
 	D_{\mathrm{JS}}(P\|Q) = \frac{1}{2} D_{KL}(P||M) + \frac{1}{2} D_{KL}(Q||M),
-	\end{equation}
+	\end{equation*}
 	donde $M = \frac{P+Q}{2}$. Tiene la ventaja de ser simétrica y finita.
 \end{defn}
 
@@ -187,9 +187,9 @@ Dedicaremos esta sección a la definición de algunos conceptos que serán de utili
 \end{defn}
 
 Finalmente, introducimos la \textbf{ley del inconsciente estadístico}, utilizada para calcular la esperanza de una función $f(X)$ de una variable aleatoria $X$ cuando se conoce la distribución de $X$ pero no la de $f(X)$:
-\begin{equation}
+\begin{equation*}
 \mathbb{E}_{x\sim p} [f(x)] = \int p(x)f(x)\diff x.
-\end{equation}
+\end{equation*}
 
 \section{Redes neuronales}
 Las redes neuronales son una clase de algoritmos de aprendizaje automático inspiradas en el estudio biológico de las neuronas en el cerebro. Cabe destacar que pese a que, toman la idea de las neuronas biológicas, no pretenden modelizarlas ni replicar su funcionamiento. Están formadas por una gran cantidad de unidades de procesamiento (o neuronas) interconectadas entre sí. Las fuerzas (o pesos) de cada una de dichas conexiones se modifica en el proceso de entrenamiento con el objetivo de minimizar una cierta función de coste. La minimización se lleva a cabo mediante el algoritmo de descenso en la dirección del gradiente o alguna de sus variantes creadas específicamente para las redes neuronales (SGD, RMSprop, Adam, etc.). Para calcular el gradiente se utiliza el algoritmo de retropropagación, basado en la regla de la cadena. Existe una gran variedad de redes neuronales según el tipo de problema de aprendizaje que se quiera resolver con ellas, la caracterización de las neuronas y la estructura de conexiones de la red. Algunas de las más conocidas son el perceptrón multicapa, las redes convolucionales o las redes recurrentes.
@@ -454,7 +454,7 @@ Es importante resaltar que, aunque el juego minimax tiene estas excelentes propi
 
 Finalmente, un problema común con el que nos encontramos al entrenar redes generativas antagónicas, es que es muy complicado comparar los resultados obtenidos. En general, no hay una manera infalible de comprobar que las imágenes generadas por una red son mejores que las generadas por otra. Se han propuesto varias medidas que tratan de cuantificar de manera objetiva la calidad de las muestras generadas, pero por el momento es un tema de investigación activo. Un buen artículo que inspecciona el estado del arte es \cite{NIPS2018_7350}.
 
-\chapter{Generación de arte}
+\chapter{Generación de imágenes artísticas}
 En esta sección nos vamos a apoyar sobre el artículo \cite{radford2015unsupervised} para implementar en \texttt{Python}, haciendo uso de \texttt{PyTorch}, una red convolucional generativa antagónica profunda (\textbf{DCGAN} o Deep Convolutional Generative Adversarial Network en inglés), con la cual vamos a generar imágenes de cuadros realistas.
 
 \section{DCGAN}
