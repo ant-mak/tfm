@@ -97,7 +97,7 @@ El aprendizaje automático es uno de los temas que más interés está suscitando en
 
 En este trabajo vamos a centrar nuestro estudio en las Redes Generativas Antagónicas (\textbf{GANs} o Generative Adversarial Networks en inglés), un tipo de modelo generativo que está recibiendo mucha atención en la actualidad debido a la introducción de ideas innovadoras en el campo del aprendizaje automático y a la cantidad de aplicaciones que posee. Los modelos generativos tienen como objetivo describir la distribución subyacente de los conjuntos de datos con los que trabajan, por ejemplo, podrían aproximar la distribución de los valores matemáticos que caracterizan las imágenes de determinados cuadros de arte para luego tomar muestras y, de este modo, crear cuadros totalmente nuevos de apariencia realista. Las GANs fueron propuestas por Ian Goodfellow en 2014 \cite{goodfellow2014generative}, donde describe un nuevo método de entrenamiento para modelos generativos basado en el concepto de equilibro de teoría de juegos. A grandes rasgos, y en el caso del análisis de imágenes de cuadros de arte, propone un juego en el que dos redes neuronales compiten entre sí, una generando imágenes a partir de ruido aleatorio y la otra decidiendo si son reales o falsas, dando lugar a un entrenamiento en bucle, en el que ambas redes aprenden la una de la otra.
 
-La acogida de esta idea ha sido espectacular, llevando a la publicación de numerosos artículos con extensiones, mejoras y modificaciones, obteniendo resultados impresionantes. Entre dichos artículos consideramos que merecen una mención especial \emph{DCGAN} \cite{radford2015unsupervised}, que introduce una gran cantidad de mejoras al artículo de Goodfellow y describe el espacio latente de las GANs (Figura \ref{DCGAN}), \emph{Progressive Growing of GANs} \cite{karras2017progressive}, que permite generar imágenes de alta resolución mediante el entrenamiento progresivo de las redes (Figura \ref{PROGAN}), \emph{Cycle-GAN} \cite{zhu2017unpaired}, que permite la traducción de imágenes según su estilo, conservando el contexto (Figura \ref{CYCLEGAN}) y \emph{Wasserstein GAN} \cite{arjovsky2017wasserstein} que describe una variante de GAN con muy buenas propiedades matemáticas. 
+La acogida de esta idea ha sido espectacular, llevando a la publicación de numerosos artículos con extensiones, mejoras y modificaciones, obteniendo resultados impresionantes. Entre dichos artículos consideramos que merecen una mención especial \emph{DCGAN} \cite{radford2015unsupervised}, que introduce una gran cantidad de mejoras sobre artículo original \cite{goodfellow2014generative} y describe el espacio latente de las GANs, dando la posibilidad de realizar operaciones aritméticas sobre los vectores de entrada, para así, por ejemplo, obtener una imagen de una mujer con gafas restando al vector de hombre con gafas el de hombre sin gafas y, después, al resultado sumarle el de mujer sin gafas. En la Figura \ref{DCGAN} podemos visualizar este proceso. \emph{Progressive Growing of GANs} \cite{karras2017progressive}, que permite generar imágenes de alta resolución mediante un entrenamiento progresivo, añadiendo capas a las redes a medida que se sucede el entrenamiento. En la Figura \ref{PROGAN} podemos ver una muestra de las imágenes generadas mediante esta técnica. \emph{Cycle-GAN} \cite{zhu2017unpaired}, Permite la traducción bidireccional de imágenes según su estilo, conservando el contexto. En la Figura \ref{CYCLEGAN} vemos cómo se transforman zebras en caballos (estilo) mientras que se mantiene la pradera (contexto). \emph{GAN text to image synthesis}, \cite{reed2016generative} que genera imágenes a partir de descripciones de texto. En la Figura \ref{text_image} pedimos en texto una flor blanca y amarilla, con pétalos finos de color blanco y estambre amarillo. \emph{Wasserstein GAN} \cite{arjovsky2017wasserstein} que describe una variante de GAN con muy buenas propiedades matemáticas.
 
 \begin{figure}[h]
 	\centering
@@ -119,9 +119,17 @@ La acogida de esta idea ha sido espectacular, llevando a la publicación de numer
 		\caption{Cycle-GAN}
 		\label{CYCLEGAN}
 	\end{subfigure}
+	\begin{subfigure}{.8\textwidth}
+	\centering
+	\includegraphics[width=.6\linewidth]{../images/report/text_to_image.png}
+	\caption{GAN text to image synthesis}
+	\label{text_image}
+	\end{subfigure}
 	\caption{Imágenes descriptivas de algunas variantes de GANs.}
 	\label{GAN:papers}
 \end{figure}
+
+Aunque el campo en el que más aplicaciones de las GANs están siendo desarolladas es el de visión por computador, también se está investigando cómo aplicar este tipo de métodos en otras áreas, por ejemplo, en procesamiento del lenguaje natural tenemos seqGAN \cite{yu2017seqgan} y en generación de audio, WaveGAN \cite{donahue2018adversarial}.
 
 En el Capítulo 2 introduciremos los conceptos esenciales del aprendizaje automático, daremos algunas definiciones que serán de utilidad en capítulos posteriores y describiremos brevemente las redes neuronales, centrando la atención en las redes neuronales convolucionales. En el Capítulo 3 explicaremos en mayor detalle la idea conceptual de las redes generativas antagónicas y desarrollaremos la teoría matemática en la que se fundamentan. El Capítulo 4 está dedicado a la descripción de nuestra implementación en \texttt{Python} de una DCGAN para generar imágenes artísticas. Este capítulo va ligado al repositorio de código con el que acompañamos el proyecto\footnote{Todo el código de este proyecto se puede encontrar en el repositorio de GitHub \url{https://github.com/ant-mak/tfm}, donde además incluimos las instrucciones para la reproducción de los resultados del proyecto.}, que constituye una parte fundamental del trabajo realizado. Finalmente, en el Capítulo 5, presentamos las conclusiones y señalamos algunos temas y líneas de investigación que sería interesante perseguir en el futuro.
 
@@ -288,20 +296,20 @@ Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el obje
 \end{figure}
 
 \chapter{Redes generativas antagónicas}
-En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas. Daremos en primer lugar una idea conceptual de su funcionamiento, centrándonos después en la demostración de sus propiedades teóricas más relevantes. Finalmente concluimos con algunas consideraciones a tener en cuenta en la práctica.
+En este capítulo describiremos las ideas principales, tanto teóricas como prácticas de las redes generativas antagónicas. Daremos en primer lugar una idea conceptual de su funcionamiento, centrándonos después en la demostración de sus propiedades teóricas más relevantes. Finalmente concluimos con algunas consideraciones a tener en cuenta en la práctica. Una buena referencia que ofrece una visión general del tema es \cite{creswell2018generative}.
 
 \section{Idea general}
 El objetivo de las GANs, y en general de los modelos generativos, es aprender la distribución que siguen los datos, pudiendo obtener así, en última instancia, muestras de dicha distribución. En general, las distribuciones que queremos modelar son muy complejas. Supongamos que nuestro objetivo es tomar muestras de la distribución de imágenes de perros, o dicho de otro modo, generar fotos de perros que sean realistas pero que no existan en la realidad ni sean una mezcla de imágenes de nuestro conjunto de entrenamiento. Tenemos la seguridad de que la distribución es extremadamente intrincada, existen perros de distintos colores, tamaños, razas, etc. Este problema es el que van a tratar de atacar las GANs.
 
 La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a generar imágenes a partir de ruido aleatorio con distribución $p_z(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sea capaz de discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista.
 
-Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
+Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros (pesos) $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos, generando así una imagen falsa $G(z)$. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
 \begin{equation}
 \min_G \max_D V(G,D) = \mathbb{E}_{x \sim p_d(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1- D(G(z)))].
 \label{minimax}
 \end{equation}
 
-En la Figura \ref{ganconcept} mostramos una representación esquemática del funcionamiento de las GANs y en el Algoritmo \ref{alg:gan} lo describimos de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
+En la Figura \ref{ganconcept} mostramos una representación esquemática del funcionamiento de las GANs. En el caso de imágenes a color, podemos interpretar el esquema de la manera siguiente: por un lado, un vector aleatorio $z$ de dimensión $(1 \times 1 \times m)$ entra en la red generadora $G$, que devuelve una imagen falsa $G(z)$ de dimensión $(n \times n \times 3)$. Esta imagen pasa a la red discriminadora $D$, que devuelve la probabilidad $D(G(z))$ de que la imagen sea real. Por otro lado, tomamos una imagen $x$ (de dimensión $(n \times n \times 3)$) del conjunto de datos y la procesamos a través de la red discriminadora, obteniendo la probabilidad $D(x)$ de que la imagen sea, en efecto, real. En el Algoritmo \ref{alg:gan} describimos el proceso de manera más concisa, dando además, una primera idea de cómo se lleva a cabo el entrenamiento.
 
 \begin{figure}[h]
 	\centering
@@ -319,16 +327,16 @@ En la Figura \ref{ganconcept} mostramos una representación esquemática del funci
 	Tomar muestra $(x^{(1)}, x^{(2)}, \ldots, x^{(m)})$ de tamaño $m$ de $p_{d}(x)$\;
 	Actualizar el discriminador ascendiendo su gradiente:
 	$$
-	\nabla_{\theta_d} \frac{1}{m}\sum_{i = 1}^{m}\left[\log D\left( x^{(i)}\right) + \log \left( 1 - D(G(z^{(i)}))\right) \right].
+	\theta_d \leftarrow \theta_d + \alpha \nabla_{\theta_d} \frac{1}{m}\sum_{i = 1}^{m}\left[\log D\left( x^{(i)}\right) + \log \left( 1 - D(G(z^{(i)}))\right) \right].
 	$$
 	}
 	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_g(z)$\;
-	Actualizar el generador ascendiendo su gradiente:
+	Actualizar el generador descendiendo su gradiente:
 	$$
-	\nabla_{\theta_g} \frac{1}{m}\sum_{i = 1}^{m} \log \left( 1 - D(G(z^{(i)}))\right).
+	\theta_g \leftarrow \theta_g - \alpha \nabla_{\theta_g} \frac{1}{m}\sum_{i = 1}^{m} \log \left( 1 - D(G(z^{(i)}))\right).
 	$$
 	}
-	\caption{Entrenamiento minibatch de una red generativa antagónica. El valor de $k$ es un hiperparámetro que se puede elegir libremente.}
+	\caption{Entrenamiento minibatch de una red generativa antagónica. Los valores de $k$ y $\alpha$ son hiperparámetros que se pueden elegir libremente, $\theta_d$ y $\theta_g$ son los pesos de las redes $D$ y $G$ respectivamente.}
 	\label{alg:gan}
 \end{algorithm}
 
@@ -551,7 +559,7 @@ En la Figura \ref{img:generated} mostramos medio batch de imágenes generadas con
 \end{figure}
 
 \chapter{Conclusión}
-Las redes generativas antagónicas son una herramienta de gran interés tanto desde el punto de vista teórico como práctico. Por un lado introducen una nueva manera de pensar en el mundo del aprendizaje automático, generando una cantidad de investigación casi sin precedentes. Por otro, los modelos generativos pueden ser muy útiles para la industria, pudiendo ser empleados en, por ejemplo, la separación de contexto y estilo en imágenes \cite{karras2019style}, el entrenamiento de algoritmos igualitarios \cite{zhang2018mitigating} o la generación de texto \cite{yu2017seqgan}.
+Las redes generativas antagónicas son una herramienta de gran interés tanto desde el punto de vista teórico como práctico. Por un lado introducen una nueva manera de pensar en el mundo del aprendizaje automático, generando una cantidad de investigación casi sin precedentes. Por otro, los modelos generativos pueden ser muy útiles para la industria, pudiendo ser empleados en, por ejemplo, la generación de prendas de ropa a partir de bocetos \cite{isola2017image}, generación de resúmenes abstractivos de textos \cite{liu2018generative} o entrenamiento de algoritmos igualitarios \cite{zhang2018mitigating}.
 
 Nuestro objetivo con este trabajo ha sido la construcción de una primera aproximación al campo de las GANs, incluyendo una breve introducción del contexto del problema, el desarrollo de la idea conceptual, una reseña de la teoría involucrada y, por último, una implementación práctica, que ha sido fundamental para consolidar los conceptos más intrincados, aprender a trabajar con \texttt{PyTorch} y utilizar una GPU para llevar a cabo el entrenamiento.
 
