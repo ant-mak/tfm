@@ -225,7 +225,7 @@ Veamos ahora en detalle el funcionamiento de las redes convolucionales a la vez 
 
 Una vez definida la imagen formalmente, podemos comenzar con la descripción de la capa de convolución. La función que desempeña es la de extraer características de una imagen de manera automática. Para ello, recorre el tensor de entrada secuencialmente con una cuadrícula de tamaño predeterminado, aplicando a cada una de las posiciones de la cuadrícula uno o varios filtros (\textbf{Kernels} en inglés) cuyos coeficientes son aprendidos por la red. La salida de una operación de convolución recibe el nombre de mapa de características.
 
-En la Figura \ref{conv} tenemos una representación esquemática de todos los elementos involucrados. En la parte superior está representada una imagen de $5\times 5$ píxeles en $3$ canales: rojo, verde y azul. Los bordes de color gris son un relleno (\textbf{Padding} en inglés) de ceros cuya función es recoger mejor la información de los bordes de la imagen y modular las dimensiones de salida. La imagen está siendo recorrida por una cuadrícula $3 \times 3$ con un desplazamiento (\textbf{Stride} en inglés) de tamaño $2$, es decir, en cada paso se mueve dos posiciones hacia la derecha y al llegar al final de la línea baja dos posiciones, colocándose de nuevo a la izquierda. En la parte inferior se sitúan los filtros, que generan de el mapa de características representado a la derecha. Estos filtros funcionan de la manera siguiente: primero se realiza un producto elemento a elemento entre la cuadrícula y el filtro en cada canal de color, se suman el resultado del producto y, finalmente, se suman los resultados de cada filtro, dando lugar a un elemento del mapa de características.
+En la Figura \ref{conv} tenemos una representación esquemática de todos los elementos involucrados. En la parte superior está representada una imagen de $5\times 5$ píxeles en $3$ canales: rojo, verde y azul. Los bordes de color gris son un relleno (\textbf{Padding} en inglés) de ceros cuya función es recoger mejor la información de los bordes de la imagen y modular las dimensiones de salida. La imagen está siendo recorrida por una cuadrícula $3 \times 3$ con un desplazamiento (\textbf{Stride} en inglés) de tamaño $2$, es decir, en cada paso se mueve dos posiciones hacia la derecha y al llegar al final de la línea baja dos posiciones, colocándose de nuevo a la izquierda. En la parte inferior se sitúan los filtros, que generan el mapa de características representado a la derecha. Estos filtros funcionan de la manera siguiente: primero, se realiza un producto elemento a elemento entre la cuadrícula y el filtro en cada canal de color, se suma el resultado del producto y, finalmente, se suman los resultados de cada filtro, dando lugar a un elemento del mapa de características.
 
 \begin{figure}[h]
 	\centering
@@ -238,7 +238,7 @@ En general se puede calcular la dimensión de salida de una capa convolucional me
 \begin{equation*}
 O = \frac{W-K+2P}{S}+1,
 \end{equation*}
-donde $W$ es el ancho, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride. En nuestro ejemplo, por tanto, tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$. En general se suele utilizar más de un filtro en cada capa convolucional, obteniendo así también dimensiones de profundidad.
+donde $W$ es el ancho o alto, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride. En nuestro ejemplo, por tanto, tendremos un tamaño de salida $O = \frac{5-3+2}{2}+1 = 3$. En general se suele utilizar más de un filtro en cada capa convolucional, obteniendo así también dimensiones de profundidad.
 
 \begin{obs}
 	Como se puede ver en la fórmula, el parámetro stride influye en la dimensión de salida, cosa que utilizaremos extensivamente en las GANs.
@@ -255,7 +255,7 @@ Después de la capa de convolución se suele realizar una reducción de muestreo (\
 
 Antes de seguir adelante, es preciso introducir el concepto de \textbf{batch}, que, aunque aplica a todo tipo de redes neuronales, en nuestro caso tiene especial relevancia. El batch es un hiperparámetro que controla el número de muestras con el que es entrenada la red antes de proceder a una actualización de pesos. El tamaño del batch puede ir desde 1 hasta el número de muestras del conjunto de datos. Cuando se recorre todo el conjunto de datos se dice que ha pasado una \textbf{época}. Por ejemplo, en el caso en que el tamaño de batch sea $100$ y el conjunto de datos tenga $1000$ muestras, actualizaremos los pesos de la red cada $100$ muestras y diremos que hemos completado una época cuando lleguemos a $1000$.
 
-Recientemente se ha incorporado una técnica para mejorar la estabilidad en el entrenamiento de redes convolucionales, llamada \textbf{Batch Normalization} \cite{ioffe2015batch}. La idea fundamental es, si normalizamos los datos antes de introducirlos en la capa de entrada para reducir las influencias de las magnitudes de las variables y ajustarlos a una distribución, ¿por qué no hacer lo mismo en todas las capas?
+Recientemente, se ha incorporado una técnica para mejorar la estabilidad en el entrenamiento de redes convolucionales, llamada \textbf{Batch Normalization} \cite{ioffe2015batch}. La idea fundamental es, si normalizamos los datos antes de introducirlos en la capa de entrada para reducir las influencias de las magnitudes de las variables y ajustarlos a una distribución, ¿por qué no hacer lo mismo en todas las capas?
 
 Dado que los algoritmos de optimización pueden deshacer la normalización que introduzcamos si con ello reducen el valor de la función objetivo, es necesario introducir dos parámetros adicionales $\gamma$ y $\beta$ que serán aprendidos por la red. En el Algoritmo \ref{alg:batchnorm} mostramos un breve esquema del funcionamiento. Para más detalles se puede consultar \cite{ioffe2015batch}.
 
@@ -268,7 +268,7 @@ Dado que los algoritmos de optimización pueden deshacer la normalización que int
 	\label{alg:batchnorm}
 \end{algorithm}
 
-Finalmente hablemos de las funciones de activación. Un problema común de las funciones tradicionales como la sigmoide o la tangente hiperbólica es que en redes profundas puede dar lugar al fenómeno conocido como desvanecimiento del gradiente, que ocurre cuando el gradiente se aproxima excesivamente a cero, impidiendo el entrenamiento de la red. Por ejemplo, en el caso de la tangente hiperbólica, tenemos que su derivada se encuentra entre cero y uno. Dado que las redes neuronales utilizan el algoritmo de retropropagación, que a su vez está basado en la regla de la cadena, estaríamos multiplicando cantidades menores que uno tantas veces como capas tengamos, reduciendo de este modo de manera considerable el gradiente y haciendo el uso de estas funciones en redes de muchas capas inapropiado.
+Finalmente, hablemos de las funciones de activación. Un problema común de las funciones tradicionales como la sigmoide o la tangente hiperbólica es que en redes profundas puede dar lugar al fenómeno conocido como desvanecimiento del gradiente, que ocurre cuando el gradiente se aproxima excesivamente a cero, impidiendo el entrenamiento de la red. Por ejemplo, en el caso de la tangente hiperbólica, tenemos que su derivada se encuentra entre cero y uno. Dado que las redes neuronales utilizan el algoritmo de retropropagación, que a su vez está basado en la regla de la cadena, estaríamos multiplicando cantidades menores que uno tantas veces como capas tengamos, reduciendo de este modo de manera considerable el gradiente y haciendo el uso de estas funciones en redes de muchas capas inapropiado.
 
 Por este motivo es necesario definir otras funciones que sigan siendo no lineales pero tengan un mejor comportamiento ante estos escenarios.
 
@@ -290,12 +290,12 @@ Por este motivo es necesario definir otras funciones que sigan siendo no lineale
 	La principal ventaja de la función LeakyReLU es que evita que ciertas neuronas se apaguen indefinidamente, dejando pasar una pequeña parte del gradiente también para el caso en que $x < 0$.
 \end{obs}
 
-Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar por ejemplo un perceptrón multicapa. En la Figura \ref{cnn:diagram} se puede observar una arquitectura de red convolucional como la que hemos descrito.
+Como mencionamos anteriormente, describir exhaustivamente las CNNs no es el objetivo de este trabajo, por lo que nos hemos dejado muchos elementos relevantes en el tintero. Aún así, ya estamos en condiciones de proporcionar la arquitectura básica de una red convolucional. Suele constar de dos partes; en la primera, se busca extraer características de las imágenes mediante varias capas de convolución con pooling y activaciones ReLU, aumentando progresivamente la profundidad a la vez que se disminuye anchura y altura. Una vez construidos los mapas de características, se aplanan y se procede a la parte de clasificación, en la que se puede utilizar, por ejemplo, un perceptrón multicapa. En la Figura \ref{cnn:diagram} se puede observar una arquitectura de red convolucional como la que hemos descrito.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../images/report/red.pdf}
-	\caption{Arquitectura básica de una red convolucional}
+	\caption{Arquitectura básica de una red convolucional.}
 	\label{cnn:diagram}
 \end{figure}
 
@@ -307,7 +307,7 @@ El objetivo de las GANs, y en general de los modelos generativos, es aprender la
 
 La idea fundamental y más novedosa detrás de las GANs es poner dos redes neuronales a competir entre sí. Una red, llamada generadora $(G)$, está dedicada a generar imágenes a partir de ruido aleatorio con distribución $p_z(z)$, mientras que otra, llamada discriminadora $(D)$, trata de averiguar si la imagen es real o ficticia. Es frecuente ilustrar esta idea mediante la analogía de falsificadores de billetes que tratan de engañar a la policía. Los falsificadores empiezan dibujando billetes que no tienen nada que ver con los reales, intentando utilizarlos para realizar pagos, momento en el que son atrapados por la policía. Los falsificadores por tanto se dan cuenta de que están dibujando los billetes de manera incorrecta y modifican su técnica, mientras que la policía va aprendiendo a su vez a detectar mejor los billetes falsos. De este modo, a lo largo del entrenamiento se busca llegar a un equilibrio, en el que la policía no sea capaz de discernir los billetes falsos de los verdaderos, obteniendo así los ladrones una falsificación realista.
 
-Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros (pesos) $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos, generando así una imagen falsa $G(z)$. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenamos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
+Traduzcamos ahora esta idea a términos matemáticos. Sea el generador $G$ un PMC con parámetros (pesos) $\theta_g$ que tiene por objetivo encontrar una distribución $p_g$ lo más parecida posible a la distribución de los datos $p_d$. Para ello toma un vector aleatorio $z$ distribuido según una cierta distribución $p_z$ y lo lleva al espacio definido por los datos, generando así una imagen falsa $G(z)$. Por otro lado, sea el discriminador $D$ otro PMC con parámetros $\theta_d$, que, para una muestra, devuelve la probabilidad de que esta sea real $(x)$ o falsa $(G(z))$. Entrenaremos $D$ para que maximice la probabilidad de asignar la etiqueta correcta tanto a los ejemplos de entrenamiento como a los generados, mientras que, al mismo tiempo, entrenaremos $G$ para que minimice $\log (1- D(G(z)))$. Es decir, tenemos el siguiente juego minimax con función de utilidad $V(G,D)$:
 \begin{equation}
 \min_G \max_D V(G,D) = \mathbb{E}_{x \sim p_d(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1- D(G(z)))].
 \label{minimax}
@@ -327,14 +327,14 @@ En la Figura \ref{ganconcept} mostramos una representación esquemática del funci
 	{
 	\For{$k$ pasos}
 	{
-	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_g(z)$\;
+	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_z(z)$\;
 	Tomar muestra $(x^{(1)}, x^{(2)}, \ldots, x^{(m)})$ de tamaño $m$ de $p_{d}(x)$\;
 	Actualizar el discriminador ascendiendo su gradiente:
 	$$
 	\theta_d \leftarrow \theta_d + \alpha \nabla_{\theta_d} \frac{1}{m}\sum_{i = 1}^{m}\left[\log D\left( x^{(i)}\right) + \log \left( 1 - D(G(z^{(i)}))\right) \right].
 	$$
 	}
-	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_g(z)$\;
+	Tomar muestra $(z^{(1)}, z^{(2)}, \ldots, z^{(m)})$ de tamaño $m$ de $p_z(z)$\;
 	Actualizar el generador descendiendo su gradiente:
 	$$
 	\theta_g \leftarrow \theta_g - \alpha \nabla_{\theta_g} \frac{1}{m}\sum_{i = 1}^{m} \log \left( 1 - D(G(z^{(i)}))\right).
@@ -348,7 +348,7 @@ En la Figura \ref{ganconcept} mostramos una representación esquemática del funci
 En esta sección realizaremos un análisis de la teoría que hay detrás de las redes generativas antagónicas, utilizando como referencias principales \cite{goodfellow2014generative, goodfellow2016nips}. En primer lugar veremos cuáles son el generador y discriminador óptimos, mostrando después que el Algoritmo \ref{alg:gan} logra que $p_g$ converja a $p_d$.
 
 \subsection{Óptimo global}
-Veamos en primer lugar cual es el discriminador óptimo para un generador dado.
+Veamos en primer lugar cuál es el discriminador óptimo para un generador dado.
 \begin{teorema}
 	Para un generador $G$ fijo, el discriminador $D$ óptimo es:
 	\begin{equation}
@@ -360,7 +360,7 @@ Veamos en primer lugar cual es el discriminador óptimo para un generador dado.
 	El discriminador busca maximizar la Ecuación (\ref{minimax}), que podemos reescribir, utilizando la ley del inconsciente estadístico como:
 	\begin{equation*}
 	\begin{aligned}
-	V(G,D) &= \int_x p_{d}(x) \log (D(x)) \diff x + \int_z p_z(z) \log(1-D(g(z))) \diff z\\
+	V(G,D) &= \int_x p_{d}(x) \log (D(x)) \diff x + \int_z p_z(z) \log(1-D(G(z))) \diff z\\
 	&= \int_x \left(p_{d}(x) \log (D(x)) + p_g(x) \log (1-D(x))\right) \diff x.
 	\end{aligned}
 	\end{equation*}
@@ -376,7 +376,7 @@ Suponiendo que $a+b \neq 0$, hacemos la segunda derivada en $\frac{a}{a+b}$, obt
 \begin{equation*}
 f''\left(\frac{a}{a+b}\right) = -\frac{a}{\left(\frac{a}{a+b}\right)^2} - \frac{b}{\left(1 - \frac{a}{a+b}\right)^2},
 \end{equation*}
-que es menor que cero para $(a.b) \in (0,1)$. Tomando por tanto $D = \frac{p_d}{p_d+p_g}$ tenemos el resultado, que además es único, ya que $f$ tiene un solo máximo en el intervalo.
+que es menor que cero para $(a,b) \in (0,1)$. Tomando por tanto $D = \frac{p_d}{p_d+p_g}$ tenemos el resultado, que además es único, ya que $f$ tiene un solo máximo en el intervalo.
 \end{proof}
 Es importante considerar que en la práctica, al desconocer $p_d(x)$, no podemos obtener el $D$ óptimo, pero su existencia nos permitirá demostrar ahora que existe un óptimo para $G$.
 \begin{teorema}
@@ -481,7 +481,7 @@ Es importante no confundir las convoluciones fraccionales o traspuestas con las 
 \begin{equation*}
 O = S(W-1)+K-2P,
 \end{equation*}
-donde $W$ es el ancho, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride.
+donde $W$ es el ancho o alto, $K$ el tamaño del filtro, $P$ el padding y $S$ el stride.
 
 \begin{figure}[h]
 	\centering
@@ -494,10 +494,10 @@ Fijémonos ahora en el artículo \cite{radford2015unsupervised}, donde los autores
 
 \begin{itemize}
 	\item En el discriminador, utilizar convoluciones con stride en lugar de convoluciones con pooling.
-	\item En el generador, utilizar convoluciones traspuestas con stride en lugar de convoluciones con pooling.
-	\item No utilizar capas totalmente conectadas.
+	\item En el generador, utilizar convoluciones fraccionales con stride en lugar de convoluciones con pooling.
+	\item No utilizar capas totalmente conectadas (PMC).
 	\item Utilizar funciones de activación ReLU en todas las capas del generador salvo en la última, en la que utilizar $\tanh$.
-	\item Utilizar funciones de activación LeakyReLU en todas las capas del discriminador.
+	\item Utilizar funciones de activación LeakyReLU en todas las capas del discriminador salvo en la última, en la que utilizar sigmoide.
 	\item Utilizar batch normalization tanto para el generador como el discriminador.
 	\item Inicializar los pesos de ambas redes según una distribución normal.
 \end{itemize}
@@ -565,7 +565,7 @@ En la Figura \ref{img:generated} mostramos medio batch de imágenes generadas con
 \end{figure}
 
 \chapter{Conclusión}
-Las redes generativas antagónicas son una herramienta de gran interés tanto desde el punto de vista teórico como práctico. Por un lado introducen una nueva manera de pensar en el mundo del aprendizaje automático, generando una cantidad de investigación casi sin precedentes. Por otro, los modelos generativos pueden ser muy útiles para la industria, pudiendo ser empleados en, por ejemplo, la generación de prendas de ropa a partir de bocetos \cite{isola2017image}, generación de resúmenes abstractivos de textos \cite{liu2018generative} o entrenamiento de algoritmos igualitarios \cite{zhang2018mitigating}.
+Las redes generativas antagónicas son una herramienta de gran interés tanto desde el punto de vista teórico como práctico. Por un lado, introducen una nueva manera de pensar en el mundo del aprendizaje automático, generando una cantidad de investigación casi sin precedentes. Por otro, los modelos generativos pueden ser muy útiles para la industria, pudiendo ser empleados en, por ejemplo, la generación de prendas de ropa a partir de bocetos \cite{isola2017image}, generación de resúmenes abstractivos de textos \cite{liu2018generative} o entrenamiento de algoritmos igualitarios \cite{zhang2018mitigating}.
 
 Nuestro objetivo con este trabajo ha sido la construcción de una primera aproximación al campo de las GANs, incluyendo una breve introducción del contexto del problema, el desarrollo de la idea conceptual, una reseña de la teoría involucrada y, por último, una implementación práctica, que ha sido fundamental para consolidar los conceptos más intrincados, aprender a trabajar con \texttt{PyTorch} y utilizar una GPU para llevar a cabo el entrenamiento.
 
