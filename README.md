@@ -8,6 +8,7 @@ Trabajo Fin de Máster.
 Máster en Tratamiento Estadístico Computacional de la Información. Universidad Complutense de Madrid y Universidad Politécnica de Madrid.
 
 ## Algunos ejemplos de imágenes generadas
+![gen_image](/animations/animation_19_7_14_11.gif")
 ![gen_image](/images/results/generated_data.png?raw=true "generated_images")
 
 ## Contenido
