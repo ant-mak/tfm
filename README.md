@@ -11,7 +11,7 @@ Máster en Tratamiento Estadístico Computacional de la Información. Universida
 ![gen_image](/images/results/generated_data.png)
 
 ## Evolución de la muestra de control a lo largo del entrenamiento
-![evolution_gif](/animations/animation_19_7_14_11.gif)
+![evolution_gif](/misc/animation_19_7_14_11.gif)
 
 ## Contenido
 Trabajo fin de máster sobre redes generativas antagónicas. En el repositorio se incluye:
@@ -49,6 +49,6 @@ Por defecto se instalará la versión CPU de PyTorch, Si se quiere hacer el entr
 
 7.1. [Entrenamiendo desde cero] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
   
-7.2. [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial. (TODO)
+7.2. [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando solamente las celdas TODO.
 
 **Nota:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
