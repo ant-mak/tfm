@@ -41,7 +41,7 @@ conda activate tfm_anton
 ```
 pip install -r requirements.txt
 ```
-Es recomendable utilizar descargar [PyTorch](https://pytorch.org) siguiendo las instrucciones de la web.
+**Nota 1:** Es recomendable utilizar descargar [PyTorch](https://pytorch.org) siguiendo las instrucciones de la web.
 
 5. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB` en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`, quedando la ruta `data/paintings/test/` con las imágenes de ambas carpetas dentro.
 
@@ -51,4 +51,4 @@ Es recomendable utilizar descargar [PyTorch](https://pytorch.org) siguiendo las 
   
 8. [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-pretrained.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
 
-**Nota:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
+**Nota 2:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
