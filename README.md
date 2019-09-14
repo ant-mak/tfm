@@ -37,11 +37,13 @@ conda create -n tfm_anton python=3.6
 conda activate tfm_anton
 ```
 
-4. Instalar los paquetes del archivo `requirements.txt` introduciendo en la consola
+4. Instalar los paquetes necesarios, descargando [PyTorch](https://pytorch.org) siguiendo las instrucciones de la web y después ejecutando en la consola:
 ```
-pip install -r requirements.txt
+conda install jupyter
+conda install matplotlib
+conda install -c conda-forge tqdm
 ```
-**Nota 1:** Es recomendable utilizar descargar [PyTorch](https://pytorch.org) siguiendo las instrucciones de la web.
+**Nota 1:** Alternativamente se puede ejecutar en la consola `pip install -r requirements.txt` pero puede dar problemas.
 
 5. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB` en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`, quedando la ruta `data/paintings/test/` con las imágenes de ambas carpetas dentro. **Para utilizar el modelo preentrenado no es necesario descargar el conjunto de datos.**
 
