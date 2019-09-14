@@ -6,6 +6,7 @@ Trabajo de Fin de Máster.
 **Director:** Francisco Javier Yáñez Gestoso.
 
 Máster en Tratamiento Estadístico Computacional de la Información. Universidad Complutense de Madrid y Universidad Politécnica de Madrid.
+
 *Contacto:* amakarov@ucm.es
 
 ## Algunos ejemplos de imágenes generadas
