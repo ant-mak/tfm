@@ -43,7 +43,7 @@ pip install -r requirements.txt
 ```
 **Nota 1:** Es recomendable utilizar descargar [PyTorch](https://pytorch.org) siguiendo las instrucciones de la web.
 
-5. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB` en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`, quedando la ruta `data/paintings/test/` con las imágenes de ambas carpetas dentro. **Observación:** Para utilizar el modelo preentrenado no es necesario descargar el conjunto de datos.
+5. Descargar de [Kaggle](https://www.kaggle.com/c/painter-by-numbers/data) los archivos `train.zip` y `test.zip` (aproximadamente `50 GB` en total), descomprimirlos en la **misma** carpeta dentro de `data/paintings`, quedando la ruta `data/paintings/test/` con las imágenes de ambas carpetas dentro. **Para utilizar el modelo preentrenado no es necesario descargar el conjunto de datos.**
 
 6. Ejecutar en la consola, desde la carpeta `src`, `python rm_corrupt.py` para eliminar del conjunto de datos las imágenes corruptas.
 
