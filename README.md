@@ -47,8 +47,8 @@ pip install -r requirements.txt
 
 6. Ejecutar en la consola, desde la carpeta `src`, `python rm_corrupt.py` para eliminar del conjunto de datos las imágenes corruptas.
 
-7. [Entrenamiendo desde cero] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
-  
-8. [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-pretrained.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
+7. La ejecución del código se puede llevar a cabo de dos maneras:
+    - [Entrenamiendo desde cero] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-paintings.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
+    - [Uso de modelo entrenado] Ejecutar en la consola `jupyter notebook` y abrir el archivo `tfm_teci_antonmakarov_gan-trained.ipynb` ubicado en la carpeta `src`, ejecutando todas las celdas de manera secuencial.
 
 **Nota 2:** El resultado puede variar ligeramente a causa de las semillas utilizadas.
