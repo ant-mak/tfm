@@ -1,441 +1,144 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Beamer Presentation
-% LaTeX Template
-% Version 1.0 (10/11/12)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND THEMES
-%----------------------------------------------------------------------------------------
-
 \documentclass{beamer}
 
-\mode<presentation> {
-
-% The Beamer class comes with a number of default slide themes
-% which change the colors and layouts of slides. Below this is a list
-% of all the themes, uncomment each in turn to see what they look like.
-
-%\usetheme{default}
-%\usetheme{AnnArbor}
-%\usetheme{Antibes}
-%\usetheme{Bergen}
-%\usetheme{Berkeley}
-%\usetheme{Berlin}
-%\usetheme{Boadilla}
-%\usetheme{CambridgeUS}
-%\usetheme{Copenhagen}
-%\usetheme{Darmstadt}
-%\usetheme{Dresden}
-%\usetheme{Frankfurt}
-%\usetheme{Goettingen}
-%\usetheme{Hannover}
-%\usetheme{Ilmenau}
-%\usetheme{JuanLesPins}
-%\usetheme{Luebeck}
+\mode<presentation>{
 \usetheme{Madrid}
-%\usetheme{Malmoe}
-%\usetheme{Marburg}
-%\usetheme{Montpellier}
-%\usetheme{PaloAlto}
-%\usetheme{Pittsburgh}
-%\usetheme{Rochester}
-%\usetheme{Singapore}
-%\usetheme{Szeged}
-%\usetheme{Warsaw}
-
-% As well as themes, the Beamer class has a number of color themes
-% for any slide theme. Uncomment each of these in turn to see how it
-% changes the colors of your current slide theme.
-
-%\usecolortheme{albatross}
-%\usecolortheme{beaver}
-%\usecolortheme{beetle}
-%\usecolortheme{crane}
-%\usecolortheme{dolphin}
-%\usecolortheme{dove}
-%\usecolortheme{fly}
-%\usecolortheme{lily}
-%\usecolortheme{orchid}
-%\usecolortheme{rose}
-%\usecolortheme{seagull}
-%\usecolortheme{seahorse}
-%\usecolortheme{whale}
-%\usecolortheme{wolverine}
-
-%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
-
-\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+\setbeamertemplate{navigation symbols}{}
 }
 
-\usepackage{graphicx} % Allows including images
-\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{graphicx}
+\usepackage{booktabs}
 \usepackage[spanish]{babel}
 \usepackage[latin1]{inputenc}
 
-%----------------------------------------------------------------------------------------
-%	TITLE PAGE
-%----------------------------------------------------------------------------------------
+%====================================
 
-\title[Trabajo fin de grado]{Redes Generativas Antagónicas} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Trabajo de fin de máster]{Redes Generativas Antagónicas}
 
-\author[Antón Makarov]{Antón Makarov Samusev} % Your name
-\institute[UCM/UPM] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\author[Antón Makarov]{Antón Makarov Samusev}
+\institute[UCM/UPM]
 {
-Universidad Complutense de Madrid \\ % Your institution for the title page
+Universidad Complutense de Madrid \\
 \medskip
-Universidad Politécnica de Madrid %\\
-%\medskip
-%\textit{john@smith.com} % Your email address
+Universidad Politécnica de Madrid \\
+\medskip
+\textit{amakarov@ucm.es}
 }
-\date{11 de septiembre de 2019} % Date, can be changed to a custom date
+\date{25 de septiembre de 2019}
+
+%====================================
 
 \begin{document}
 
 \begin{frame}
-\titlepage % Print the title page as the first slide
+\titlepage
 \end{frame}
+
+%------------------------------------------------
 
 \begin{frame}
-\frametitle{Índice} % Table of contents slide, comment this block out to remove it
-\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\frametitle{Índice}
+\tableofcontents
 \end{frame}
 
-%----------------------------------------------------------------------------------------
-%	PRESENTATION SLIDES
-%----------------------------------------------------------------------------------------
+%------------------------------------------------
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%====================================
 %Para incluir graficas
 %\begin{figure}
 %\includegraphics[width=0.8\linewidth]{test}
 %\end{figure}
+%====================================
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\section{Objetivos}
+%------------------------------------------------
+\section{Redes Generativas Antagónicas}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Objetivos}
-\begin{itemize}
-\item Historia de los métodos de punto interior.
-\item Descripción de los principales algoritmos.
-\item Descripción de algunas mejoras para los algoritmos de tipo primal-dual.
-\item Demostración de la complejidad.
-\item Implementación de algunos algoritmos en MATLAB.
-\end{itemize}
+	\frametitle{Objetivo}
+	
 \end{frame}
 
-%------------------------------------------------
-\section{Descripción del problema e historia}
-%------------------------------------------------
+\begin{frame}
+\frametitle{Idea conceptual}
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{../images/report/scheme.pdf}
+\end{figure}
+\end{frame}
 
 \begin{frame}
-\frametitle{Descripción del problema}
-\begin{itemize}
-\item<1-> Problema de programación lineal (PPL): maximizar o minimizar una función lineal sujeta a un conjunto de restricciones lineales.
-\item<2-> Forma primal estándar: $\min c^Tx \text{ sujeto a: } Ax = b, x \geq 0$, donde $c, x \in \mathbb{R}^n, b \in \mathbb{R}^m$ y $A \in \mathcal{M}_{m\times n}(\mathbb{R})$.
-\item<3-> Forma dual: $\max b^Ty \text{ sujeto a: } A^Ty + s = c, s \geq 0$, donde $y \in \mathbb{R}^m$ y $s \in \mathbb{R}^n$.
-\item<4-> Condiciones KKT:
+\frametitle{Aspectos teóricos}
 \begin{equation*}
-\begin{aligned}
-Ax &=b \\
-A^Ty + s &= c \\
-XSe &= 0\\
-(x,s) &\geq 0.
-\end{aligned}
+\min_G \max_D V(G,D) = \mathbb{E}_{x \sim p_d(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1- D(G(z)))].
+\label{minimax}
 \end{equation*}
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Historia}
-\begin{itemize}
-\item<1-> Hasta 1979 $\rightarrow$ Algoritmo del símplex (Dantzig).
-\item<2-> 1979 $\rightarrow$ algoritmo del elipsoide (Khachiyan).
-\item<3-> 1984 $\rightarrow$ algoritmo proyectivo (Karmarkar).
-\item<4-> 1985 $\rightarrow$ algoritmo primal de barrera logarítmica (Gill et. al.).
-\item<5-> 1989 $\rightarrow$ algoritmo primal-dual (Meggido).
-\item<6-> 1992 $\rightarrow$ algoritmo primal-dual predictor-corrector (Mehrotra).
-\end{itemize}
 \end{frame}
 
 %------------------------------------------------
-\section{Métodos de punto interior}
-\subsection{Algoritmo del elipsoide}
+\section{Generación de arte}
+\subsection{DCGAN}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Algoritmo del elipsoide (Factibilidad)}
-Fórmulas de actualización del elipsoide ($d$ es la fila de $A$ correspondiente a la restricción que no se cumple).
-\begin{align}
-x^{k+1} &= x^k - \frac{1}{n+1} \frac{D_k d}{\sqrt{d^T D d}} \label{update:x},\\
-D_{k+1} &= \frac{n^2}{n^2 -1} \left(D_k - \frac{2}{n+1} \frac{(D_k d)(D_k d)^T}{d^T D_k d}\right).
-\label{update:D}
-\end{align}
-\begin{itemize}
-\item<1-> Dado un punto inicial $x^0 \in \mathbb{R}^n$. Tomamos un elipsoide centrado en él que contenga al conjunto estrictamente factible $\hat{P}$.
-\item<2->El algoritmo comprueba si el punto es o no factible. Si lo es, termina.
-\item<3->Si no es factible, busca cuál es la inecuación que no se cumple y toma como $d$ la fila de $A$ correspondiente.
-\item<4->Se actualiza el elipsoide mediante las fórmulas (\ref{update:x}) y (\ref{update:D}).
-\item<5->El proceso se repite hasta que se encuentra un punto factible o hasta que se alcanza el máximo número de iteraciones, en cuyo caso se concluye que $\hat{P} = \emptyset$.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Algoritmo del elipsoide (Optimización)}
-Queremos resolver el problema de programación lineal descrito por:
-\begin{equation*}
-z = \max\{c^Tx:x\in P\}, \quad P = \{x\in \mathbb{R}^n : Ax \leq b\}.
-\end{equation*}
-Podemos aplicar el algoritmo de factibilidad de manera iterada.
-
-Cada vez que lleguemos a un punto factible, vamos a añadir al sistema $(A | b)$ una fila que proporcione una restricción con la misma forma de la función objetivo y que pase por dicho punto, reduciendo cada vez más el conjunto factible y por tanto la zona donde se busca el óptimo.
-
-Ejemplo:
-\begin{equation}
-\begin{aligned}
-\max x_1 +  x_2\\
-\text{sujeto a: } -x_1 + 3x_2 &\leq 3\\
-2x_1 + x_2 &\leq 8\\
--6x_1 + x_2 &\leq -4\\
-x_1,x_2 &\geq 0.
-\end{aligned}
-\label{problema:ejemplo}
-\end{equation}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Ejemplo de aplicación (factibilidad)}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Ejemplo de aplicación (Optimización)}
+\frametitle{DCGAN}
 
 \end{frame}
 
 %------------------------------------------------
-\subsection{Algoritmo primal}
+\subsection{Metodología}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Algoritmo primal}
-\begin{itemize}
-\item<1-> Función de barrera logarítmica: $B(x,\mu) = c^T x - \mu \sum_{i=1}^n \log x_i$.
-\item<2-> Problema a resolver: $\min B(x,\mu) \text{ sujeto a: } Ax = b$.
-\item<3-> Condiciones KKT:
-\begin{equation*}
-\begin{aligned}
-Ax &=b \\
-A^Ty + s &= c \\
-XSe &= \mu e\\
-(x,s) &\geq 0.
-\end{aligned}
-\end{equation*}
-\item<4-> Formulación:
-\begin{equation*}
-\begin{pmatrix}
-  H & A^T\\
-  A & 0
-\end{pmatrix}
-\begin{pmatrix}
-  -\Delta x \\
-  y
-\end{pmatrix} =
-\begin{pmatrix}
-  c - \mu X^{-1}e \\
-  0
-\end{pmatrix}.
-\end{equation*}
-\item<5-> Parámetros:
-\begin{itemize}
-\item centralización $\sigma \rightarrow \mu_{k+1} = \sigma \mu_k$.
-\item moderación $\alpha  \rightarrow x^{k+1} = x^k + \alpha \Delta x^k$.
-\end{itemize}
-\item<6-> Criterio de parada $\rightarrow$ cuando $\lVert \Delta x^k \rVert$ sea suficientemente pequeño.
-\end{itemize}
+	\frametitle{Obtención y pre-procesado}
+	
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+	\includegraphics[width=0.7\linewidth]{../images/results/original_data.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
+	\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+\subsection{Resultados}
+%------------------------------------------------
+
+\begin{frame}
+	\frametitle{Resultados}
+	
 \end{frame}
 
 %------------------------------------------------
-\subsection{Algoritmo primal-dual}
+\subsection{Recursos y rendimiento}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Algoritmo primal-dual}
-\begin{itemize}
-\item<1-> Aprovecha la información del problema dual.
-\item<2-> Formulación:
-\begin{equation*}
-\begin{pmatrix}
-  0 & A^T &I \\
-  A & 0 & 0 \\
-  S & 0 & X
-\end{pmatrix}
-\begin{pmatrix}
-  \Delta x \\
-  \Delta y \\
-  \Delta s
-\end{pmatrix} = 
-\begin{pmatrix}
-  -(A^T y + s - c) \\
-  -(Ax-b) \\
-  -XSe + \sigma \mu e
-\end{pmatrix}.
-\end{equation*}
-\item<3-> Precisa de los mismos parámetros que el algoritmo primal.
-\item<4-> Criterio de parada $\rightarrow$ cuando $\mu = x^T s /n$ sea suficientemente pequeño. A este valor se le llama medida de dualidad.
-\end{itemize}
+	\frametitle{Recursos y rendimiento}
+	
 \end{frame}
 
 %------------------------------------------------
-\subsection{Algoritmo de Mehrotra}
+\section{Arquitecturas basadas en GANs}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Punto inicial I}
-¿Qué buscamos?
-\begin{itemize}
-\item$x^0, s^0 >0$.
-\item Norma pequeña.
-\item Componentes no muy distintas y no demasiado cercanas a cero.
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{Punto inicial II}
-¿Cómo lo hacemos?
-\begin{itemize}
-\item<1-> Calculamos el vector $\tilde{x}$ de norma mínima que satisfaga la restricción primal y el vector $(\tilde{y},\tilde{s})$ que satisfaga la restricción dual con $s$ de norma mínima.
-\item <2-> En general $\tilde{x}$ y $\tilde{s}$ pueden tener componentes negativas. Lo evitamos definiendo los parámetros
-\begin{equation*}
-\delta_x = \max (-(3/2) \min_i \tilde{x_i},0), \quad \delta_s = \max (-(3/2) \min_i \tilde{s_i},0).
-\end{equation*}
-Hacemos $\hat{x} = \tilde{x} + \delta_x e, \hat{s} = \tilde{s} + \delta_s e$.
-\item<3->Para que las componentes de $x^0$ y $s^0$ no sean demasiado distintas ni cercanas a cero, definimos dos parámetros más:
-\begin{equation*}
-\hat{\delta_x} = \frac{1}{2} \frac{\hat{x}^T \hat{s}}{e^T \hat{s}}, \quad \hat{\delta_s} = \frac{1}{2} \frac{\hat{x}^T\hat{s}}{e^T \hat{x}}.
-\end{equation*}
-\item<4-> El punto inicial será:
-\begin{equation*}
-x^0 = \hat{x} + \hat{\delta_x}e, \quad y^0 = \tilde{y}, \quad s^0 = \hat{s} + \hat{\delta_s}e.
-\end{equation*}
-\end{itemize}
+	\frametitle{Arquitecturas basadas en GANs}
+	
 \end{frame}
 
 %------------------------------------------------
-
-\begin{frame}
-\frametitle{Predicción-corrección}
-\begin{itemize}
-\item<1-> Obtener el paso afín o de predicción:
-\begin{equation*}
-\begin{pmatrix}
-  0 & A^T &I \\
-  A & 0 & 0 \\
-  S & 0 & X
-\end{pmatrix}
-\begin{pmatrix}
-  \Delta x^{\mathrm{af}} \\
-  \Delta y^{\mathrm{af}} \\
-  \Delta s^{\mathrm{af}}
-\end{pmatrix} = 
-\begin{pmatrix}
-  -(A^T y + s - c) \\
-  -(Ax-b) \\
-  -XSe
-\end{pmatrix}.
-\end{equation*}
-\item<2-> Utilizando el paso afín, obtener el paso de corrección:
-\begin{equation*}
-\begin{pmatrix}
-  0 & A^T & I \\
-  A & 0 & 0 \\
-  S & 0 & X
-\end{pmatrix}
-\begin{pmatrix}
-  \Delta x^{\mathrm{corr}} \\
-  \Delta y^{\mathrm{corr}} \\
-  \Delta s^{\mathrm{corr}}
-\end{pmatrix} = 
-\begin{pmatrix}
-  0 \\
-  0 \\
-  -\Delta X^{\mathrm{af}} \Delta S^{\mathrm{af}} e
-\end{pmatrix}.
-\end{equation*}
-\item<3-> Combinar ambos pasos:
-\begin{equation*}
-(\Delta x^{\mathrm{af}},\Delta y^{\mathrm{af}}, \Delta s^{\mathrm{af}})+(\Delta x^{\mathrm{corr}},\Delta y^{\mathrm{corr}}, \Delta s^{\mathrm{corr}}).
-\end{equation*}
-\end{itemize}
-\end{frame}
-
+\section{Consideraciones prácticas}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Parámetro de centralización}
-\begin{itemize}
-\item<1-> Heurística: elegir $\sigma_k$ apropiado en cada iteración.
-\item<2-> Si el paso de escalado afín reduce de manera significativa la medida de dualidad, podemos tomar un valor pequeño de $\sigma_k$.
-\item<3-> Si no se puede hacer un paso grande sobre la dirección, tomamos un valor de $\sigma_k$ grande, con el objetivo de centrar la iteración siguiente.
-\item<4->Para ello hacemos:
- \begin{equation*}
- \mu_{\mathrm{af}} = \frac{(x + \alpha_{\mathrm{af}}^{\mathrm{primal}} \Delta x)^T(s+\alpha_{\mathrm{af}}^{\mathrm{dual}} \Delta s)}{n}, \quad \sigma = \left( \frac{\mu_{\mathrm{af}}}{\mu}\right)^3.
- \end{equation*}
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Longitud de paso}
-\begin{itemize}
-\item<1->Se calculan por separado las longitudes de paso más grandes posibles tales que las variables $x$ y $s$ se mantengan no negativas.
-\begin{equation*}
-\alpha_{k,\mathrm{max}}^{\mathrm{primal}} = \min_{i: \Delta x_i^{k} < 0} - \frac{x_i^k}{\Delta x_i^{k}}, \quad \alpha_{k,\mathrm{max}}^{\mathrm{dual}} = \min_{i: \Delta s_i^{k} < 0} - \frac{s_i^k}{\Delta s_i^{k}}.
-\end{equation*}
-\item<2->Mejor utilizar pasos grandes $\rightarrow$ se toma un parámetro $\eta \in [0.9, 1)$:
-\begin{equation*}
-\alpha_k^{\mathrm{primal}} = \min(1, \eta \alpha_{k,\mathrm{max}}^{\mathrm{primal}}), \quad \alpha_k^{\mathrm{dual}} = \min(1, \eta \alpha_{k,\mathrm{max}}^{\mathrm{dual}}).
-\end{equation*}
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-\section{Complejidad}
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Complejidad algoritmica}
-\begin{block}{Pregunta}
-¿Cuál es el número de iteraciones necesario para alcanzar una brecha de dualidad $\leq \psi$?
-\end{block}
-Sea $\epsilon = \frac{\psi}{\mu_0}$, donde $\mu_0 = \frac{\sum_i x_i^0 s_i^0}{n}$.
-
-Sea $K$ el mínimo valor de $k = 1, 2, \ldots$ tal que $\mu_k \leq \psi$. Se tiene que:
-\begin{equation*}
-K = \frac{n}{\delta} \log \left( \frac{1}{\epsilon}\right).
-\end{equation*}
-Como $\delta$ no depende de $n$, el número de iteraciones necesarias es:
-\Large
-\begin{equation*}
-\mathcal{O}\left(n \log\left(\frac{1}{\epsilon}\right)\right).
-\end{equation*}
-\normalsize
-Además, en cada iteración las operaciones tienen complejidad polinomial. Por tanto, el algoritmo tiene complejidad polinomial. 
+	\frametitle{Consideraciones prácticas}
+	
 \end{frame}
 
 %------------------------------------------------
@@ -443,67 +146,8 @@ Además, en cada iteración las operaciones tienen complejidad polinomial. Por tan
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Rendimiento I}
-Problema (\ref{problema:ejemplo}) puesto en forma estándar:
-\begin{equation*}
-\begin{aligned}
-\min -x_1 - x_2  \\
-\text{sujeto a: } -x_1 + 3x_2 + h_1 &= 3 \\
-2x_1 + x_2 + h_2 &= 8 \\
--6x_1 + x_2 + h_3 &= -4 \\
-x_1,x_2, h_1,h_2,h_3 &\geq 0.
-\end{aligned}
-\end{equation*}
-\begin{table}[]
-\centering
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Método} & \textbf{Óptimo - Resultado} & \textbf{Iteraciones} & $\mu$ \\ \hline
-Elipsoide       & 0.1402                           & 12                              & -           \\ \hline
-Mehrotra        & 0                           & 7                              &$1.1661 \times 10^{-7}$            \\ \hline
-EJOR            & 0                           & 19                              & $1.9073 \times 10^{-6}$           \\ \hline
-\end{tabular}
-\end{table}
-\begin{block}{Importante}
-\small
-Con estos resultados no queremos decir que un algoritmo sea mejor que otro, no obstante, es satisfactorio comprobar que se corresponden con lo previsto. 
-\end{block}
-\end{frame}
-
-\begin{frame}
-\frametitle{Rendimiento II}
-Comparativa del número de iteraciones necesarias para alcanzar distintas precisiones con el algoritmo de Mehrotra.
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|}
-\hline
-\bf{Valor de $\mu$ pedido} & \bf{Valor de $\mu$ alcanzado} & \bf{Número de iteraciones} \\ \hline
-$1 \times 10^{-1}$ &  $0.0344$    & 2                     \\ \hline
-$1 \times10^{-2}$ & $0.0029$     & 3                     \\ \hline
-$1 \times10^{-3}$ & $2.2781\times 10^{-4}$ & 4                     \\ \hline
-$1 \times10^{-4}$ & $1.8221 \times 10^{-5}$ & 5                     \\ \hline
-$1 \times10^{-5}$ & $1.4577\times 10^{-6}$ & 6                     \\ \hline
-$1 \times10^{-6}$ & $1.1661\times 10^{-7}$ & 7                     \\ \hline
-$1 \times10^{-9}$ & $7.4633\times 10^{-10}$ & 9                     \\ \hline
-$1 \times10^{-12}$ & $3.8212\times 10^{-13}$ & 12                    \\ \hline
-\end{tabular}
-\end{table}
-\end{frame}
-
-\begin{frame}
-\frametitle{Rendimiento III}
-
-\end{frame}
-
-\begin{frame}
 \frametitle{Conclusión}
-\begin{itemize}
-\item Los métodos de punto interior son una herramienta muy potente para resolver problemas de programación lineal.
-\item Son muy eficientes al ser aplicados a problemas reales de gran tamaño.
-\item Aseguran que resolveremos nuestros problemas de optimización en $\mathcal{O}(n\log (1/\epsilon))$ iteraciones.
-\item La implementación de los algoritmos ha sido una parte fundamental en el aprendizaje.
-\item La demostración de la complejidad ha revelado técnicas interesantes.
-\end{itemize}
+
 \end{frame}
 
 %------------------------------------------------
@@ -514,27 +158,11 @@ $1 \times10^{-12}$ & $3.8212\times 10^{-13}$ & 12                    \\ \hline
 \frametitle{Referencias principales}
 \begin{thebibliography}{9}
 
-\bibitem{EJOR} 
-Gondzio, J.
-\textit{Interior point methods 25 years later.}
-European Journal of Operational Research 218, 587--601, 2012.
 
-\bibitem{elipsoide}
-Nemhauser G. L., Wolsey, L. A.
-\textit{Integer and Combinatorial Optimization.}
-Wiley Interscience Series in Discrete Mathematics and Optimization, New York, 1988.
-
-\bibitem{opti}
-Nocedal, J., Wright, S. J.
-\textit{Numerical Optimization.}
-Springer, 2006.
-
-\bibitem{robere}
-Robere, R.
-\textit{Interior Point Methods and Linear Programming.}
-University of Toronto, 2012.
 \end{thebibliography}
 \end{frame}
+
+%------------------------------------------------
 
 \begin{frame}
 \centering
@@ -543,7 +171,5 @@ Gracias por su atención. \par
 \vfill
 ¿Preguntas?
 \end{frame}
-
-%----------------------------------------------------------------------------------------
 
 \end{document}
