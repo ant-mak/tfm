@@ -33,20 +33,13 @@ Universidad Politécnica de Madrid \\
 \titlepage
 \end{frame}
 
-%------------------------------------------------
+%====================================
 
 \begin{frame}
 \frametitle{Índice}
 \tableofcontents
 \end{frame}
 
-%------------------------------------------------
-
-%====================================
-%Para incluir graficas
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
 %====================================
 
 %------------------------------------------------
@@ -54,8 +47,14 @@ Universidad Politécnica de Madrid \\
 %------------------------------------------------
 
 \begin{frame}
-	\frametitle{Objetivo}
-	
+	\frametitle{Descripción del problema}
+	\begin{itemize}
+	\item <1-> Goodfellow et. al. 2014
+	\item <2-> Aprendizaje no supervisado
+	\item <3-> Describir la distribución que siguen los datos
+	\item <4-> Generar muestras a partir de dicha distribución
+	\item <5->  Mediante redes neuronales que compiten entre sí
+	\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -80,7 +79,11 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 \frametitle{DCGAN}
-
+\center \textbf{Deep Convolutional Generative Adversarial Network}
+\vfill
+\begin{itemize}
+	\item 
+\end{itemize}
 \end{frame}
 
 %------------------------------------------------
@@ -88,8 +91,22 @@ Universidad Politécnica de Madrid \\
 %------------------------------------------------
 
 \begin{frame}
-	\frametitle{Obtención y pre-procesado}
-	
+\frametitle{Obtención y pre-procesado}
+	\begin{itemize}
+		\item Conjunto de datos obtenido en Kaggle
+		\item Más de 100000 imágenes $\approx 50$ GB
+		\item Algunas imágenes corruptas
+		\item Escalado de tamaños y proporciones
+		\item Normalización
+		\item Carga como tensores
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Arquitectura}
+	\begin{figure}
+		\includegraphics[width=0.45\linewidth]{../images/report/architecture.pdf}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -98,20 +115,14 @@ Universidad Politécnica de Madrid \\
 \end{figure}
 \end{frame}
 
-\begin{frame}
-	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
-	\end{figure}
-\end{frame}
-
-
 %------------------------------------------------
 \subsection{Resultados}
 %------------------------------------------------
 
 \begin{frame}
-	\frametitle{Resultados}
-	
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------
@@ -120,7 +131,11 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 	\frametitle{Recursos y rendimiento}
-	
+	\begin{itemize}
+		\item Imprescindible GPU para el entrenamiento
+		\item 24 horas para 30 épocas
+		\item en PC normal, 20 veces más lento
+	\end{itemize}
 \end{frame}
 
 %------------------------------------------------
@@ -129,7 +144,7 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 	\frametitle{Arquitecturas basadas en GANs}
-	
+
 \end{frame}
 
 %------------------------------------------------
@@ -138,7 +153,11 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 	\frametitle{Consideraciones prácticas}
-	
+	\begin{itemize}
+		\item ¿Cómo evaluar los resultados?
+		\item ¿Cómo comparar arquitecturas?
+		\item Mode collapse
+	\end{itemize}
 \end{frame}
 
 %------------------------------------------------
@@ -147,7 +166,10 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 \frametitle{Conclusión}
-
+\begin{itemize}
+	\item Campo de investigación en auge
+	\item 
+\end{itemize}
 \end{frame}
 
 %------------------------------------------------
