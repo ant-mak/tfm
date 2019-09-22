@@ -7,6 +7,8 @@
 
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{animate}
+\usepackage{xmpmulti}
 \usepackage[spanish]{babel}
 \usepackage[latin1]{inputenc}
 
@@ -82,7 +84,14 @@ Universidad Politécnica de Madrid \\
 \center \textbf{Deep Convolutional Generative Adversarial Network}
 \vfill
 \begin{itemize}
-	\item 
+	\item Discriminador: Convolución con stride
+	\item Generador: Convolución fraccional con stride
+	\item No utilizar capas totalmente conectadas
+	\item Generador: ReLU $+ \tanh$
+	\item Discriminador: LeakyReLU $+$ sigmoide
+	\item BatchNorm
+	\item Inicialización gaussiana
+	\item <2-> One sided label smoothing
 \end{itemize}
 \end{frame}
 
@@ -93,7 +102,7 @@ Universidad Politécnica de Madrid \\
 \begin{frame}
 \frametitle{Obtención y pre-procesado}
 	\begin{itemize}
-		\item Conjunto de datos obtenido en Kaggle
+		\item Conjunto de datos obtenido de una competición de Kaggle
 		\item Más de 100000 imágenes $\approx 50$ GB
 		\item Algunas imágenes corruptas
 		\item Escalado de tamaños y proporciones
@@ -103,16 +112,16 @@ Universidad Politécnica de Madrid \\
 \end{frame}
 
 \begin{frame}
-	\frametitle{Arquitectura}
 	\begin{figure}
-		\includegraphics[width=0.45\linewidth]{../images/report/architecture.pdf}
+		\includegraphics[width=0.7\linewidth]{../images/results/original_data.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-\begin{figure}
-	\includegraphics[width=0.7\linewidth]{../images/results/original_data.png}
-\end{figure}
+	\frametitle{Arquitectura}
+	\begin{figure}
+		\includegraphics[width=0.45\linewidth]{../images/report/architecture.pdf}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------
@@ -123,6 +132,12 @@ Universidad Politécnica de Madrid \\
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
 	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\centering
+	\transduration<0-16>{0}
+	\multiinclude[<+->][format=png, graphics={width=0.85\textwidth}]{../misc/something}
 \end{frame}
 
 %------------------------------------------------
@@ -144,7 +159,10 @@ Universidad Politécnica de Madrid \\
 
 \begin{frame}
 	\frametitle{Arquitecturas basadas en GANs}
-
+	\begin{figure}
+		\includegraphics[width=1\linewidth]{../images/presentation/evolution.png}
+		\caption{Ian Goodfellow. \textit{4.5 years of GAN progress on face generation.}}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------
@@ -179,7 +197,14 @@ Universidad Politécnica de Madrid \\
 \begin{frame}
 \frametitle{Referencias principales}
 \begin{thebibliography}{9}
+\bibitem{gan}
+I. Goodfellow, J. Pouget-Abadie, M. Mirza, B. Xu, D. Warde-Farley, S. Ozair, A. Courville, and Y. Bengio. Generative adversarial nets. In \textit{Advances in neural information processing systems}, pages 2672--2680, 2014.
 
+\bibitem{dcgan}
+A. Radford, L. Metz, and S. Chintala. Unsupervised representation learning with deep convolutional generative adversarial networks. \textit{arXiv preprint arXiv:1511.06434}, 2015.
+
+\bibitem{dl}
+I. Goodfellow, Y. Bengio, and A. Courville. \textit{Deep Learning}. MIT Press, 2016. \texttt{http://www.deeplearningbook.org}.
 
 \end{thebibliography}
 \end{frame}
@@ -189,9 +214,7 @@ Universidad Politécnica de Madrid \\
 \begin{frame}
 \centering
 \Huge
-Gracias por su atención. \par
-\vfill
-¿Preguntas?
+Gracias por su atención
 \end{frame}
 
 \end{document}
