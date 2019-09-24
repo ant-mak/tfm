@@ -7,8 +7,9 @@
 
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{animate}
-\usepackage{xmpmulti}
+\usepackage{tikz}
+\usetikzlibrary{spy}
+
 \usepackage[spanish]{babel}
 \usepackage[latin1]{inputenc}
 
@@ -20,10 +21,11 @@
 \institute[UCM/UPM]
 {
 Universidad Complutense de Madrid \\
-\medskip
 Universidad Politécnica de Madrid \\
 \medskip
-\textit{amakarov@ucm.es}
+\textit{amakarov@ucm.es} \\
+\medskip
+Dirigido por Francisco Javier Yáñez Gestoso
 }
 \date{25 de septiembre de 2019}
 
@@ -62,7 +64,7 @@ Universidad Politécnica de Madrid \\
 \begin{frame}
 \frametitle{Idea conceptual}
 \begin{figure}
-\includegraphics[width=0.8\linewidth]{../images/report/scheme.pdf}
+\includegraphics[width=0.8\linewidth]{../images/presentation/scheme.pdf}
 \end{figure}
 \end{frame}
 
@@ -76,6 +78,25 @@ Universidad Politécnica de Madrid \\
 
 %------------------------------------------------
 \section{Generación de arte}
+\subsection{Redes neuronales convolucionales}
+%------------------------------------------------
+
+\begin{frame}
+	\frametitle{CNN I}
+	\begin{figure}
+		\includegraphics[width=1\linewidth]{../images/presentation/convolut.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{CNN II}
+	\begin{figure}
+		\includegraphics[width=1\linewidth]{../images/presentation/red.pdf}
+	\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
 \subsection{DCGAN}
 %------------------------------------------------
 
@@ -93,6 +114,7 @@ Universidad Politécnica de Madrid \\
 	\item Inicialización gaussiana
 	\item <2-> One sided label smoothing
 \end{itemize}
+\huge \uncover<3->{\url{https://github.com/ant-mak/tfm}}
 \end{frame}
 
 %------------------------------------------------
@@ -118,26 +140,12 @@ Universidad Politécnica de Madrid \\
 \end{frame}
 
 \begin{frame}
-	\frametitle{Arquitectura}
-	\begin{figure}
-		\includegraphics[width=0.45\linewidth]{../images/report/architecture.pdf}
-	\end{figure}
-\end{frame}
+\begin{tikzpicture}[spy using outlines={magnification=3,size=5cm, connect spies}]
 
-%------------------------------------------------
-\subsection{Resultados}
-%------------------------------------------------
-
-\begin{frame}
-	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
-	\end{figure}
-\end{frame}
-
-\begin{frame}
-	\centering
-	\transduration<0-16>{0}
-	\multiinclude[<+->][format=png, graphics={width=0.85\textwidth}]{../misc/something}
+\node {\pgfimage[interpolate=true,width=0.5\linewidth]{../images/presentation/architecture.pdf}};
+\only<1>\spy on (-1.98,1) in node [left] at (-4,1);
+\only<2>\spy on (1.93,1.5) in node [left] at (-4,1);
+\end{tikzpicture}
 \end{frame}
 
 %------------------------------------------------
@@ -154,6 +162,28 @@ Universidad Politécnica de Madrid \\
 \end{frame}
 
 %------------------------------------------------
+\subsection{Resultados}
+%------------------------------------------------
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{../images/results/generated_data.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+	\includegraphics<1>[width=0.8\linewidth]{../misc/fix-0.png}
+	\includegraphics<2>[width=0.8\linewidth]{../misc/fix-1.png}
+	\includegraphics<3>[width=0.8\linewidth]{../misc/fix-2.png}
+	\includegraphics<4>[width=0.8\linewidth]{../misc/fix-3.png}
+	\includegraphics<5>[width=0.8\linewidth]{../misc/fix-4.png}
+	\includegraphics<6>[width=0.8\linewidth]{../misc/fix-5.png}
+	\includegraphics<7>[width=0.8\linewidth]{../misc/fix-6.png}
+	\end{figure}
+\end{frame}
+
+%------------------------------------------------
 \section{Algunas arquitecturas basadas en GANs}
 %------------------------------------------------
 
@@ -161,7 +191,6 @@ Universidad Politécnica de Madrid \\
 	\frametitle{Evolución en generación de caras}
 	\begin{figure}
 		\includegraphics[width=1\linewidth]{../images/presentation/evolution.png}
-		\caption{Ian Goodfellow. \textit{4.5 years of GAN progress on face generation.}}
 	\end{figure}
 \end{frame}
 
